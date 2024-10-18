@@ -9,10 +9,24 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  app:{
-    head:{
-      title:"DailyCue"
+  app: {
+    head: {
+      title: "DailyCue",
     },
   },
-  modules: ["@nuxt/fonts"],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        sass: {
+          api: "modern",
+        },
+      },
+    },
+  },
+  modules: [
+    "@nuxt/fonts",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
+    "vue3-perfect-scrollbar/nuxt",
+  ],
 });

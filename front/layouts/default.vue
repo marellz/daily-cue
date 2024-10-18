@@ -1,9 +1,18 @@
 <template>
   <header class="border-b">
     <layout-container class="py-10">
-      <nuxt-link to="/">
-        <base-logo />
-      </nuxt-link>
+      <div class="flex items-center space-x-10">
+        <nuxt-link to="/">
+          <base-logo />
+        </nuxt-link>
+  
+        <ul class="flex space-x-4">
+          <li v-for="({to, label}, index) in links" :key="index">
+            <nuxt-link :to class="font-medium">{{ label }}</nuxt-link>
+          </li>
+        </ul>
+
+      </div>
     </layout-container>
   </header>
   <main class="flex-auto my-10">
@@ -27,4 +36,11 @@
     </layout-container>
   </footer>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const links = [
+  {
+    to:"/tasks",
+    label: "Tasks"
+  }
+]
+</script>
