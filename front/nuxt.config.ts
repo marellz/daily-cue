@@ -9,9 +9,14 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  app:{
-    head:{
-      title:"DailyCue"
+  runtimeConfig: {
+    public: {
+      API_URL: process.env.API_URL ?? `http://localhost:3000`,
+    },
+  },
+  app: {
+    head: {
+      title: "DailyCue",
     },
   },
   modules: ["@nuxt/fonts"],
