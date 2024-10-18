@@ -25,7 +25,7 @@ export default defineNuxtConfig({
         sass: {
           api: "modern",
         },
-      },,
+      },
     },
   },
   modules: [
