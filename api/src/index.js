@@ -12,7 +12,6 @@ import routes from "#router/index.js";
 dotenv.config();
 
 const app = express();
-const PORT = config.port;
 
 // Middleware
 app.use(cors());
@@ -33,6 +32,6 @@ mongoose
   );
 
 // Start Server
-app.listen(PORT, () => {
-  console.warn(`Server running on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`);
 });
