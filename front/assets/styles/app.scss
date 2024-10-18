@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .btn{
+        @apply inline-flex items-center whitespace-nowrap space-x-2 border rounded-lg p-3 hover:border-black focus:border-gray-700;
+    }
+
+    .card{
+        @apply border rounded-lg p-4;
+    }
+}
