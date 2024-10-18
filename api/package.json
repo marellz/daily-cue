@@ -2,7 +2,7 @@
   "name": "daily-cue",
   "version": "1.0.0",
   "description": "API for daily-cue app. Express. Mongo.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -10,10 +10,12 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.7.1"
+    "mongoose": "^8.7.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
