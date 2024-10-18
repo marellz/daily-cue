@@ -5,6 +5,9 @@
   "main": "./src/index.js",
   "type": "module",
   "license": "MIT",
+  "imports": {
+    "#*": "./src/*"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"

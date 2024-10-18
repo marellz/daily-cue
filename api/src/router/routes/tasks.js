@@ -1,12 +1,12 @@
 import express from "express";
-import Task from "../../models/Task.js";
+import Task from "#models/Task.js";
 import {
   index,
   get,
   store,
   update,
   destroy,
-} from "../../controllers/TaskController.js";
+} from "#controllers/TaskController.js";
 const router = express.Router();
 
 router.get("/", index);

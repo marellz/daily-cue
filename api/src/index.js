@@ -3,11 +3,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import config from "./config/index.js";
+import config from "#config/index.js";
 import bodyParser from "body-parser";
 
 // router
-import routes from "./router/index.js";
+import routes from "#router/index.js";
 
 dotenv.config();
 
