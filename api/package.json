@@ -10,13 +10,15 @@
   },
   "scripts": {
     "start": "node ./src/index.js",
-    "dev": "nodemon ./src/index.js"
+    "dev": "nodemon ./src/index.js",
+    "seed-tasks": "node ./src/seeders/task-seeder.js"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "moment": "^2.30.1",
     "mongoose": "^8.7.1",
     "uuid": "^10.0.0"
   },
