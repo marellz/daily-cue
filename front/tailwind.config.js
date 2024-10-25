@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       colors: {
-        //https://coolors.co/114b5f-1a936f-88d498-c6dabf-f3e9d2
+        //https://coolors.co/114b5f-1a936f-88d498-c6dabf-f3e9d2-f0544f
         "midnight-green": "#114b5fff",
         "sea-green": "#1a936fff",
         celadon: "#88d498ff",
