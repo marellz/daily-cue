@@ -2,12 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components{
-    .btn{
-        @apply inline-flex items-center whitespace-nowrap space-x-2 border rounded-lg p-3 hover:border-black focus:border-gray-700;
+@layer components {
+  .btn {
+    @apply inline-flex items-center whitespace-nowrap space-x-2 border rounded-lg p-3 hover:border-black focus:border-gray-700;
+
+    &.btn-primary {
+      @apply bg-black border-black text-white;
+    }
+  }
+
+  .card {
+    @apply border rounded-lg p-4;
+  }
+
+  .form-input {
+    @apply border rounded-lg p-2 block w-full;
+  }
+
+  .tag {
+    @apply py-1 px-2 border border-current rounded-full font-medium text-sm;
+  }
+
+  .overview-tag{
+    @apply text-sm px-2 py-1 rounded-full bg-slate-100
+  }
+
+  .form-switch {
+    @apply flex items-center space-x-2;
+
+    &__indicator {
+      @apply ml-0 border-2 border-gray-500 w-16 h-8 rounded-full after:ml-0.5 after:h-6 after:w-6 after:m-0.5 after:bg-gray-400 after:rounded-full after:block transition-all after:transition-all after:duration-300 ease-linear after:transform opacity-50;
     }
 
-    .card{
-        @apply border rounded-lg p-4;
+    input {
+      @apply invisible h-0 w-0;
+      &:checked + .form-switch__indicator {
+        @apply border-slate-800 after:bg-slate-800 after:translate-x-8 opacity-100;
+      }
     }
+  }
 }
