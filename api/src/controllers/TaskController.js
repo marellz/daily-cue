@@ -16,7 +16,7 @@ export const index = async (req, res) => {
     let day_end = due_date.endOf("day").toDate();
 
     let query_parameters = {
-      due_date: { $gt: day_start, $lte: day_end },
+      due_date: { $gte: day_start, $lte: day_end },
     };
 
     const data = await Task.find(query_parameters);
@@ -57,7 +57,7 @@ export const store = async (req, res) => {
       due_date = moment().add(2, "hours");
     }
 
-    const task = await Task.create({
+    const data = await Task.create({
       title,
       description,
       due_date: moment(due_date),
@@ -65,7 +65,8 @@ export const store = async (req, res) => {
       completed,
     });
 
-    return res.status(200).json({ task });
+    return res.status(200).json({ data });
+
   } catch (error) {
     return res
       .status(500)
@@ -76,21 +77,18 @@ export const store = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
+    const payload = {...req.body}
 
-    const task = await Task.findById(id);
-
-    if (task.exists()) {
-      return res.status(404).json({
-        error: "Task not found",
-      });
+    if(payload.status === 'complete'){
+      payload.completed = true
     }
 
-    task.update(req.body);
+    await Task.findByIdAndUpdate(id, payload);
 
-    const item = await Task.findById(id);
+    const data = await Task.findById(id);
 
     return res.status(200).json({
-      item,
+      data,
     });
   } catch (error) {
     return res.status(500).json({

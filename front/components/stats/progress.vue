@@ -14,9 +14,9 @@
             <frown :size="36"/>
           </template>
         </div>
-        <h1 class="text-[40px] text-green-400">
+        <span class="font-bold text-[40px] text-green-400">
             +78%
-        </h1>
+        </span>
     </div>
   </div>
 </template>

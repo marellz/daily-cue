@@ -1,8 +1,10 @@
 <template>
   <div ref="datepicker">
     <button type="button" class="btn" @click="active = !active">
-      <span>Today</span>
-      <ArrowDown />
+      <span>{{
+        selectedDate.isSame(today, "day") ? "Today" : formatDate(selectedDate)
+      }}</span>
+      <Calendar :size="16" />
     </button>
     <div v-show="active" class="card bg-white mt-2 absolute z-10">
       <div class="border rounded-lg p-4 flex">
@@ -34,11 +36,12 @@
             <td v-for="day in week.days">
               <button
                 type="button"
-                class="border w-10 h-10 rounded-lg"
+                class="border w-10 h-10 rounded-lg bg-transparent text-black disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-300"
                 :class="{
-                  'bg-black text-white': today.isSame(day, 'date'),
-                  'bg-celadon': day.isSame(selectedDate, 'day'),
+                  '!bg-black !text-white': today.isSame(day, 'date'),
+                  '!bg-celadon': day.isSame(selectedDate, 'day'),
                 }"
+                :disabled="disableOlder && day.isBefore(today, 'day')"
                 @click="selectDate(day)"
               >
                 {{ day.date() }}
@@ -51,13 +54,20 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ArrowLeft, ArrowRight, ArrowDown } from "lucide-vue-next";
+import { ArrowLeft, ArrowRight, Calendar } from "lucide-vue-next";
 import moment, { type Moment } from "moment";
 import { onClickOutside } from "@vueuse/core";
-
+withDefaults(
+  defineProps<{
+    disableOlder?: boolean;
+  }>(),
+  {
+    disableOlder: false,
+  }
+);
 const datepicker = ref();
 const weekDays = computed(() => "SMTWTFS".split(""));
-
+const model = defineModel({});
 // get today
 const today = moment();
 
@@ -91,13 +101,20 @@ const buildCalendar = (month: string = currentMonth.value) => {
 // dialog
 const active = ref(false);
 
-const selectedDate = ref<Moment | null>();
+const selectedDate = ref<Moment>(today);
 const selectDate = (date: Moment) => {
   selectedDate.value = date;
+  model.value = date
+
+  active.value = false
 };
+
+const formatDate = (date: Moment) => moment(date).format("Do MMM YYYY");
 
 onMounted(() => {
   buildCalendar();
+
+  model.value = today;
 });
 
 watch(
