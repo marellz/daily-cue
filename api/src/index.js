@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import config from "#config/index.js";
+import config from "../config/db.js";
 import bodyParser from "body-parser";
 
 // router
