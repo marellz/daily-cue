@@ -7,9 +7,18 @@
           <base-logo />
         </nuxt-link>
 
-        <ul class="flex space-x-4">
+        <ul class="flex space-x-4 flex-auto">
           <li v-for="({ to, label }, index) in links" :key="index">
             <nuxt-link :to class="font-medium">{{ label }}</nuxt-link>
+          </li>
+          <li  class="!ml-auto">
+            <a v-if="auth.isAuthenticated" href="#" class="font-medium !ml-auto" @click.prevent="auth.logout">
+              <span>Logout</span>
+            </a>
+         
+            <nuxt-link v-else to="/auth/login" class="font-medium">
+              <span>Login</span>
+            </nuxt-link>
           </li>
         </ul>
       </div>
@@ -37,6 +46,9 @@
   </footer>
 </template>
 <script lang="ts" setup>
+import { useAuthStore } from '~/store/auth';
+
+const auth = useAuthStore()
 const links = [
   {
     to: "/tasks",
