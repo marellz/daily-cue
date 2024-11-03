@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import config from "#config/index.js";
+import config from "../../config/db.js";
 import tasks from "#data/tasks.js";
 import TaskModel from "#models/Task.js";
 import dotenv from "dotenv";
@@ -11,10 +11,10 @@ const run = async () => {
     await TaskModel.deleteMany();
     // write fresh
     await TaskModel.insertMany(tasks);
-    console.log("all good");
+    console.log("Seeding completed");
     process.exit(0);
   } catch (error) {
-    console.log("not all good: ", error);
+    console.log("Error occurred when seeding tasks: ", error);
     process.exit(1);
   }
 };
