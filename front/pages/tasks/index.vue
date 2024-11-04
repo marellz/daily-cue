@@ -16,16 +16,18 @@
             </button>
           </div>
           <div class="flex items-start space-x-4 mt-4">
-            <form-datepicker v-model="filters.date"></form-datepicker>
             <form-status v-model="filters.status"></form-status>
           </div>
-          <perfect-scrollbar v-if="filtered.length" class="max-h-[50vh] mt-10">
+          <div class="mt-4">
+            <date-week v-model="filters.date"></date-week>
+          </div>
+          <perfect-scrollbar v-if="tasks.length" class="max-h-[50vh] mt-10">
             <transition-group
               name="tasks"
               tag="ul"
               class="space-y-3 flex flex-col"
             >
-              <li v-for="task in filtered" :key="task._id">
+              <li v-for="task in tasks" :key="task._id">
                 <task-item :task />
               </li>
             </transition-group>
@@ -58,36 +60,13 @@ import type { TaskStatus } from "~/types/task";
 const store = useTasksStore();
 const filters = ref<{
   status: TaskStatus;
-  date: null | Moment;
+  date: null | string;
 }>({
   status: "default",
   date: null,
 });
 
-const filtered = computed(() => {
-  let filtered = [...store.tasks];
-  if (filters.value.status !== "default") {
-    filtered = filtered.filter((t) => t.status === filters.value.status);
-  }
-
-  if (filters.value.date !== null) {
-    filtered = filtered.filter(
-      (t) =>
-        filters.value.date &&
-        moment(t.due_date).isSame(filters.value.date, "day")
-    );
-  }
-
-  filtered.sort((a, b) => {
-    if (a.completed || a.status === "completed") {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
-
-  return filtered;
-});
+const tasks = computed(() => store.tasks)
 
 const newTaskForm = ref();
 
@@ -98,8 +77,20 @@ watch(
   }
 );
 
+watch(
+  ()=> filters.value,
+  async ({date, status}) => {
+  
+    let dateString = date ? date : moment().format('YYYY-MM-DD')
+    await store.all(dateString, status)
+  },{
+    deep: true
+  }
+)
+
 onMounted(async () => {
-  await store.all();
+  let dateString = moment().format('YYYY-MM-DD')
+  await store.all(dateString, 'default');
 });
 </script>
 <style lang="scss" scoped>
