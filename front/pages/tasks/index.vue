@@ -52,6 +52,10 @@ import { Plus, BrainCircuit } from "lucide-vue-next";
 import moment, { type Moment } from "moment";
 import type { TaskStatus } from "~/types/task";
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const store = useTasksStore();
 const filters = ref<{
   status: TaskStatus;
@@ -90,7 +94,6 @@ onMounted(async () => {
 </script>
 <style lang="scss" scoped>
 .tasks {
-
   &-enter-to,
   &-leave-from {
     transform: translateX(0);
@@ -98,14 +101,14 @@ onMounted(async () => {
   }
 
   &-enter-from,
-  &-leave-to {
+  &-leave-to  {
     transform: translateX(10px);
     opacity: 0;
   }
 
   &-leave-active,
   &-enter-active {
-    transition: all .15s ease;
+    transition: all 0.15s ease;
   }
 
   &-leave-active {

@@ -1,136 +1,158 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useToastsStore } from "./toasts";
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
-interface RegistrationForm extends LoginForm {
-  name: string;
-  password_confirmation: string;
-}
+import type {
+  User,
+  LoginForm,
+  RegistrationForm,
+  LoginResponse,
+  RegisterResponse,
+  GetUserResponse,
+} from "@/types/users";
 
 export const useAuthStore = defineStore(
   "auth",
   () => {
     const { $api } = useNuxtApp();
-    const user = ref<User | null>();
-    const token = ref()
-    const loading = ref(false)
-    const errors = ref<Array<{}>([])
-    const toasts = useToastsStore()
+    const user = ref<User | null>(null);
+    const token = ref();
+    const loading = ref(false);
+    const errors = ref<Array<string>>([]);
+    const toasts = useToastsStore();
 
     const handleAuthError = (error: string) => {
+      errors.value = [error];
       toasts.addToast({
-        title: 'Error during authentication',
+        title: "Error during authentication",
         description: error,
-      })
-    }
+      });
+    };
 
     const login = async (payload: LoginForm) => {
       try {
-        loading.value = true
-        const { data, error, token: _token} = await $api.post('/auth/login', payload)
-  
-        if(error){
-          handleAuthError(error.message)
-          return
-        } 
-        
-        if(data && _token){
-          user.value = data
-          token.value = _token
+        loading.value = true;
+        const {
+          data,
+          error,
+          token: _token,
+        }: LoginResponse = await $api.post("/auth/login", payload);
+
+        if (error) {
+          handleAuthError(error);
+          return;
+        }
+
+        if (data && _token) {
+          user.value = data;
+          token.value = _token;
 
           toasts.addToast({
-            title:'Auth successful!',
-            description:"YOU can now have access to your tasks"
-          })
+            title: "Auth successful!",
+            description: "YOU can now have access to your tasks",
+          });
 
-          return true
+          return true;
         }
-        
-      } catch (error: {error: Message}) {
-        handleAuthError(error.message)
-      } 
-      finally {
-        loading.value = false
+      } catch (error: any) {
+        handleAuthError(error.response.data.error);
+      } finally {
+        loading.value = false;
       }
     };
 
     const get = async () => {
-      // user.value = data
-
       try {
-        if(!user.value || !user.value.email){
-          handleAuthError('User does not currently exist.')
-          return false
-        }
-        const { data } = await $api.post('/auth/me', {email: user.email})
-        if(data){
-
-          return data
-          
+        if (!user.value || !user.value.email) {
+          handleAuthError("User does not currently exist.");
+          return false;
         }
 
-      } catch (error) {
-        handleAuthError(error)
+        const { data }: GetUserResponse = await $api.post("/auth/me", {
+          email: user.value.email,
+        });
+
+        if (data) {
+          return data;
+        }
+      } catch (error: any) {
+        handleAuthError(error);
       }
-    }
+    };
 
     const register = async (payload: RegistrationForm) => {
-       try {
-         loading.value = true;
-         const { data, error, token } = await $api.post("/auth/register", payload);
+      try {
+        const { password, password_confirmation } = payload;
+        if (password !== password_confirmation) {
+          errors.value.push("Passwords do not match");
+          return false;
+        }
 
-         if (error) {
-           handleAuthError(error.message);
-           return;
-         }
+        loading.value = true;
+        const {
+          data,
+          error,
+          message,
+          token: _token,
+        }: RegisterResponse = await $api.post("/auth/register", payload);
 
-         if (data && token) {
-           token.value = token;
-           user.value = data;
+        if (error) {
+          handleAuthError(error);
+          return;
+        }
 
-           return true;
-         }
-       } catch (error: { error: Message }) {
-         handleAuthError(error.message);
-       } finally {
-         loading.value = false;
-       }
+        if (data && _token) {
+          token.value = _token;
+          user.value = data;
+
+          console.log({ data, _token });
+
+          if (message) {
+            toasts.addToast({
+              title: "Success!",
+              description: message,
+            });
+          }
+
+          return true;
+        }
+      } catch (error: any) {
+        handleAuthError(error.response.data.error);
+      } finally {
+        loading.value = false;
+      }
     };
 
     const logout = async () => {
-      user.value = null
-      token.value = null
+      user.value = null;
+      token.value = null;
 
       toasts.addToast({
-        title:"Successfully logged out!"
-      })
+        title: "Successfully logged out!",
+      });
 
-      return true
+      return true;
     };
 
     watch(token, (v: string | null) => {
       $api.defaults.headers.common["Authorization"] = v;
-    })
+    });
 
-    const isAuthenticated = computed(() => user.value !== null)
+    const isAuthenticated = computed(
+      () => user.value !== null && user.value !== undefined
+    );
+
+    const clearErrors = () => {
+      errors.value = [];
+    };
 
     return {
       errors,
       user,
+      loading,
       get,
       login,
       register,
       logout,
+      clearErrors,
       isAuthenticated,
     };
   },
