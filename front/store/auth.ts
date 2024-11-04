@@ -21,7 +21,7 @@ export const useAuthStore = defineStore(
 
     const handleAuthError = (error: string) => {
       errors.value = [error];
-      toasts.addToast({
+      toasts.add({
         title: "Error during authentication",
         description: error,
       });
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore(
           user.value = data;
           token.value = _token;
 
-          toasts.addToast({
+          toasts.add({
             title: "Auth successful!",
             description: "YOU can now have access to your tasks",
           });
@@ -106,7 +106,7 @@ export const useAuthStore = defineStore(
           console.log({ data, _token });
 
           if (message) {
-            toasts.addToast({
+            toasts.add({
               title: "Success!",
               description: message,
             });
@@ -125,7 +125,7 @@ export const useAuthStore = defineStore(
       user.value = null;
       token.value = null;
 
-      toasts.addToast({
+      toasts.add({
         title: "Successfully logged out!",
       });
 

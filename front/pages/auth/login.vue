@@ -54,7 +54,7 @@ const fillDefaultValues = async () => {
   if(testUser){
     user.value = testUser
   } else {
-    toasts.addToast({
+    toasts.add({
       title:"Error gathering test users"
     })
   }

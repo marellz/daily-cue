@@ -4,6 +4,7 @@ export interface Toast {
   id: string;
   title: string;
   description?: string;
+  variant?: "error" | "info" | "success";
   duration?: number;
   timeout_id?: any;
 }
@@ -13,22 +14,21 @@ export const useToastsStore = defineStore(
   () => {
     const toasts = ref<Array<Toast>>([]);
 
-    const addToast = (toast: Omit<Toast, "id">) => {
+    const add = (toast: Omit<Toast, "id">) => {
       let id = uuidv4();
       let duration = toast.duration ?? 2000;
       toasts.value.push({ ...toast, id });
       let timeout = setTimeout(() => {
-        removeToast(id);
+        remove(id);
       }, duration);
 
       toast.timeout_id = timeout;
       
     };
 
-    const removeToast = (id: string) => {
+    const remove = (id: string) => {
       let index = toasts.value.findIndex((t) => t.id === id);
       let toast = toasts.value[index];
-      console.log(toasts.value.length);
       if (toast.timeout_id) {
         clearTimeout(toast.timeout_id);
       }
@@ -37,8 +37,8 @@ export const useToastsStore = defineStore(
 
     return {
       toasts,
-      addToast,
-      removeToast,
+      add,
+      remove,
     };
   },
   {
