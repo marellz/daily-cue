@@ -11,16 +11,20 @@
           <li v-for="({ to, label }, index) in links" :key="index">
             <nuxt-link :to class="font-medium">{{ label }}</nuxt-link>
           </li>
-          <li  class="!ml-auto">
-            <a v-if="auth.isAuthenticated" href="#" class="font-medium !ml-auto" @click.prevent="auth.logout">
-              <span>Logout</span>
-            </a>
-         
-            <nuxt-link v-else to="/auth/login" class="font-medium">
-              <span>Login</span>
-            </nuxt-link>
-          </li>
+          <template v-if="!isAuthenticated">
+            <li class="!ml-auto">
+              <nuxt-link to="/auth/login" class="font-medium">
+                <span>Login</span>
+              </nuxt-link>
+            </li>
+            <li>
+               <nuxt-link to="/auth/register" class="font-medium">
+                <span>Create account</span>
+              </nuxt-link>
+            </li>
+          </template>
         </ul>
+        <auth-dropdown v-if="isAuthenticated && user" />
       </div>
     </layout-container>
   </header>
@@ -55,4 +59,7 @@ const links = [
     label: "Tasks",
   },
 ];
+const isAuthenticated = computed(() => auth.isAuthenticated)
+const user = computed(() => auth.user)
+
 </script>
