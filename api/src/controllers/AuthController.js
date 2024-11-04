@@ -1,6 +1,13 @@
 import User from "#models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const generateToken = (email) => {
+  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "2d" });
+}
 
 export const user = async (req, res) => {
   try {
@@ -32,10 +39,10 @@ export const login = async (req, res) => {
     const passwordMatches = await bcrypt.compare(password, user.password);
 
     if (!passwordMatches) {
-      return res.status(401).json({ error: "Invalid email/password 2" });
+      return res.status(401).json({ error: "Invalid email/password" });
     }
 
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '2d'});
+    const token = generateToken(user.email);
 
     res.status(200).json({ token, data: user });
 
@@ -62,8 +69,11 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
+    const token = generateToken(email);
+
     return res.json({
       data: user,
+      token,
       message: "User registered successfully",
     });
   } catch (error) {
@@ -76,5 +86,7 @@ export const register = async (req, res) => {
 export const logout = (req, res, next) => {
   return res.json({ message: "ok" });
 };
+
 export const recoverPassword = () => {};
+
 export const resetPassword = () => {};
