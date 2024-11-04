@@ -37,7 +37,7 @@ export const useTasksStore = defineStore(
       if (item && item._id) {
         tasks.value.push(item);
       }
-      toasts.addToast({
+      toasts.add({
         title: "Task has been created!", // todo: add more info to toast
       });
 
@@ -55,7 +55,7 @@ export const useTasksStore = defineStore(
         let indexOf = tasks.value.findIndex((t: Task) => t._id === data._id);
         tasks.value[indexOf] = data;
 
-        toasts.addToast({
+        toasts.add({
           title: "Task has been updated",
         });
       }
@@ -69,7 +69,7 @@ export const useTasksStore = defineStore(
         // remove task
         tasks.value.splice(index, 1);
 
-        toasts.addToast({
+        toasts.add({
           title: "Task has been deleted",
         });
       }
