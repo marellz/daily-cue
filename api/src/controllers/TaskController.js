@@ -13,11 +13,14 @@ export const index = async (req, res) => {
       due_date = moment();
     }
 
+    const { _id: user } = await User.findOne({ email: req.user.email });
+
     let day_start = due_date.startOf("day").toDate();
     let day_end = due_date.endOf("day").toDate();
 
     let query_parameters = {
       due_date: { $gte: day_start, $lte: day_end },
+      user,
     };
 
     const data = await Task.find(query_parameters);
@@ -58,16 +61,18 @@ export const store = async (req, res) => {
       due_date = moment().add(2, "hours");
     }
 
+    const { _id : user } = await User.findOne({ email: req.user.email });
+
     const data = await Task.create({
       title,
       description,
       due_date: moment(due_date),
       status,
       completed,
+      user,
     });
 
     return res.status(200).json({ data });
-
   } catch (error) {
     return res
       .status(500)
