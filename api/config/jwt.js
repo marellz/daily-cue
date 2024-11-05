@@ -22,12 +22,9 @@ fs.readFile(envFilePath, 'utf-8', (err, data) => {
         updatedEnv = data.match(regex) ?
         data.replace(regex, entry.trim()) :
         data + `\n`+entry
-
-        console.log(data)
     }
 
     fs.writeFile(envFilePath, updatedEnv, 'utf-8', (err) => {
-        console.log(envFilePath);
         if(err){
             console.error('Error writing env file:' , err)
         } else {

@@ -1,4 +1,5 @@
 import Task from "#models/Task.js";
+import User from "#models/User.js";
 import moment from "moment";
 export const index = async (req, res) => {
   // TODO: localised/format date
@@ -77,10 +78,12 @@ export const store = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const payload = {...req.body}
+    const payload = { ...req.body };
+    
+    payload.completed = false;
 
-    if(payload.status === 'complete'){
-      payload.completed = true
+    if (payload.status === "completed") {
+      payload.completed = true;
     }
 
     await Task.findByIdAndUpdate(id, payload);
@@ -115,6 +118,42 @@ export const destroy = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       error: "Error deleting task",
+      message: error.message,
+    });
+  }
+};
+
+export const intercept = async (req, res, next, id) => {
+  try {
+    const task = await Task.findById(id);
+    // task exists
+    if (task) {
+      // task belongs to user
+      
+      const user = await User.findOne({ email: req.user.email });
+      // const taskOwner = typeof task.user
+      const currentUser = user._id
+
+      const forbidden = !task.user.equals(currentUser)
+
+      if (forbidden) {
+        return res.status(403).json({
+          error: "Forbidden",
+          message: "Action is forbidden.",
+        });
+      }
+
+      // green
+      req.task = task;
+      next();
+    } else {
+      return res.status(404).json({
+        message: "Task does not exist, or has already been deleted.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Error intercepting task",
       message: error.message,
     });
   }

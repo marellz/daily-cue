@@ -84,7 +84,7 @@ export const register = async (req, res) => {
 };
 
 export const logout = (req, res, next) => {
-  return res.json({ message: "ok" });
+  return res.json({ message: 'Logged out' });
 };
 
 export const recoverPassword = () => {};
