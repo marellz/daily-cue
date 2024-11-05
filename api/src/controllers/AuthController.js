@@ -1,24 +1,24 @@
 import User from "#models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const generateToken = (email) => {
   return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "2d" });
-}
+};
 
 export const user = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const { _id, name, email } = await User.findOne({ email: req.user.email });
 
     if (!user) {
       return res.status(404).json({
         error: "User not found",
       });
     }
-    return res.json({ data: user });
+    return res.json({ data: { _id, name, email } });
   } catch (error) {
     return res.status(500).json({
       error: "Error returning user",
@@ -45,7 +45,6 @@ export const login = async (req, res) => {
     const token = generateToken(user.email);
 
     res.status(200).json({ token, data: user });
-
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
