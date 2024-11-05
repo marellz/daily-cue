@@ -93,10 +93,10 @@ onMounted(async () => {
 });
 </script>
 <style lang="scss" scoped>
-.tasks {
+.tasks  {
   &-enter-to,
-  &-leave-from {
-    transform: translateX(0);
+  &-leave-from  {
+    transform:  translateX(0);
     opacity: 1;
   }
 
