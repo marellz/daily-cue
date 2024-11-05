@@ -15,8 +15,8 @@
       </div>
     </template>
     <div v-else class="flex items-center justify-between mt-4">
-      <div class="flex items-center">
-        <div v-for="(day, i) in days" :key="day.dateString" class="p-2">
+      <div class="flex items-center w-full">
+        <div v-for="(day, i) in days" :key="day.dateString" class="flex-auto p-2">
           <input
             type="radio"
             name="day"
@@ -27,7 +27,7 @@
           />
           <label
             :for="day.dateString"
-            class="p-3 flex flex-col bg-slate-100 rounded-lg w-20 text-center border"
+            class="p-3 flex flex-col rounded-xl text-center"
             :class="{
               '!bg-blue-500 border-blue-500 !text-white': day.isToday,
               'border-slate-500 text-slate-800': day.dateString === model,
