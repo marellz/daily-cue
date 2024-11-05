@@ -19,7 +19,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Routes
-routes.forEach(({ path, actions }) => {
+routes.forEach(({ path, middleware, actions }) => {
+  if(middleware){
+    app.use(path, middleware, actions)
+    return
+  }
   app.use(path, actions);
 });
 
