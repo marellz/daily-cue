@@ -1,13 +1,18 @@
+import bcrypt from "bcryptjs"
+
+const password1 = await bcrypt.hash("secret22", 10);
+const password2 = await bcrypt.hash("secret21", 10)
+
 const users = [
   {
-    name: "Dave TEster",
+    name: "Dave Tester",
     email: "dave@test.com",
-    password: "secret22",
+    password: password1,
   },
   {
     name: "John Doe",
     email: "john.doe@test.com",
-    password: "secret21",
+    password: password2,
   },
 ];
 

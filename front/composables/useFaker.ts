@@ -1,13 +1,15 @@
 import { faker, simpleFaker } from "@faker-js/faker";
-import { type User } from "@/types/users";
+import { type LoginForm, type User } from "@/types/users";
+import { useToastsStore } from "~/store/toasts";
 const useFaker = () => {
   const { $api } = useNuxtApp();
 
   const generateNewUser = () => {
-    const password = simpleFaker.string.alphanumeric({
-      length: { min: 6, max: 12 },
-      casing: "mixed",
-    });
+    const password = 'secret21'
+    // simpleFaker.string.alphanumeric({
+    //   length: { min: 6, max: 12 },
+    //   casing: "mixed",
+    // });
     return {
       name: faker.person.fullName(),
       password,
@@ -17,19 +19,33 @@ const useFaker = () => {
   };
 
   const getRandomUser = async (options: object = {}) => {
-    const testUser = generateNewUser();
+    const {
+      user,
+      error,
+      message,
+    }: {
+      error?: string;
+      message?: string;
+      user?: LoginForm;
+    } = await $api.get("/test/test-user");
 
-    const { data }: { data: User } = await $api.post(
-      "/auth/register",
-      testUser
-    );
+    if (!user || error) {
+      let title = error ?? "Error getting test user",
+        description = message;
+      if (!error) {
+        title = "Error getting test user";
+      }
 
-    if(data) {
-      const { email, password } = testUser;
-      return { email, password };
-    } 
+      useToastsStore().add({
+        variant: "error",
+        title,
+        description,
+      });
 
-    return null
+      return { email: "", password: "" };
+    }
+
+    return user;
   };
 
   return {

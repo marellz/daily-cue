@@ -12,6 +12,7 @@
     "start": "node ./src/index.js",
     "dev": "nodemon ./src/index.js",
     "seed-tasks": "node ./src/seeders/task-seeder.js",
+    "seed-users": "node ./src/seeders/user-seeder.js",
     "jwt": "node ./config/jwt.js"
   },
   "dependencies": {
