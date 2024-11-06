@@ -30,7 +30,6 @@ import { onClickOutside } from "@vueuse/core";
 withDefaults(
   defineProps<{
     title?: string;
-    show?: boolean;
     width?: string;
   }>(),
   {
@@ -38,9 +37,9 @@ withDefaults(
   }
 );
 
-const emit = defineEmits(["close"]);
+const show = defineModel('show', { default: false})
 const close = () => {
-  emit("close");
+  show.value = false
 };
 const modal = ref();
 onClickOutside(modal, close);

@@ -1,15 +1,12 @@
 <template>
   <toast-wrapper />
-  <header class="border-b">
-    <layout-container class="py-10">
-      <div class="flex items-center space-x-10">
-        <nuxt-link to="/">
-          <base-logo />
-        </nuxt-link>
-
-        <ul class="flex space-x-4 flex-auto">
+  <header>
+    <layout-container class="pt-10">
+      <div class="flex items-center justify-center space-x-10">
+        <ul class="flex border border-slate-400 rounded-full px-4">
           <li v-for="({ to, label }, index) in links" :key="index">
-            <nuxt-link :to class="font-medium">{{ label }}</nuxt-link>
+            <nuxt-link :to class="font-medium py-2 px-4 block text-slate-400 hover:text-black"
+              exact-active-class="!text-black">{{ label }}</nuxt-link>
           </li>
           <template v-if="!isAuthenticated">
             <li class="!ml-auto">
@@ -36,13 +33,8 @@
       <div class="flex items-center space-x-10">
         <base-logo />
         <p>
-          Made by @<a
-            class="text-blue-500"
-            href="https://dave-njoroge.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Dave</a
-          >
+          Made by @<a class="text-blue-500" href="https://dave-njoroge.vercel.app" target="_blank"
+            rel="noopener noreferrer">Dave</a>
           with 🫀
         </p>
       </div>
@@ -54,6 +46,10 @@ import { useAuthStore } from '~/store/auth';
 
 const auth = useAuthStore()
 const links = [
+  {
+    to: "/",
+    label: "Home",
+  },
   {
     to: "/tasks",
     label: "Tasks",

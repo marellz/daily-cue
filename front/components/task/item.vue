@@ -7,7 +7,6 @@
       <template v-if="!isComplete">
         <div class="flex items-center space-x-3">
           <task-status :task></task-status>
-          <p class="text-sm text-gray-500">Due {{ task.due_date }}</p>
         </div>
       </template>
       <div class="mt-4">
