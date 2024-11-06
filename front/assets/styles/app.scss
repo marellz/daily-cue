@@ -42,3 +42,11 @@
     }
   }
 }
+
+.nav-link{
+  @apply font-medium rounded-full py-1 px-4 block text-slate-400 hover:text-black;
+  
+  &--static{
+    @apply text-black;
+  }
+}
