@@ -1,9 +1,9 @@
-import { useAuthStore } from "~/store/auth"
+import { useAuthStore } from "~/store/auth";
 
-export default defineNuxtRouteMiddleware((to,from) => {
-    const auth = useAuthStore()
+export default defineNuxtRouteMiddleware((to, from) => {
+  const auth = useAuthStore();
 
-    if(!auth.isAuthenticated) {
-        navigateTo('/login')
-    }
-})
+  if (!auth.isAuthenticated) {
+    return navigateTo("/auth/login");
+  }
+});
