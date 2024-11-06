@@ -21,15 +21,23 @@ export const useTasksStore = defineStore(
     const tags = ref<Array<Tag>>(dummyTags);
 
     const all = async (date: string, status: TaskStatus) => {
-      const { data }: { data: Task[] } = await $api.get(`tasks`, {
-        params: {
-          date,
-          status,
-        },
-      });
-      tasks.value = data.map((task: Task) => {
-        return { ...task, due_date: moment(task.due_date).toDate() };
-      });
+      try {
+        const { data }: { data: Task[] } = await $api.get(`tasks`, {
+          params: {
+            date,
+            status,
+          },
+        });
+        tasks.value = data.map((task: Task) => {
+          return { ...task, due_date: moment(task.due_date).toDate() };
+        });
+      } catch (error: any) {
+        console.error(error);
+        toasts.add({
+          variant:"error",
+          title:"Error getting tasks",
+        })
+      }
     };
 
     const create = async (task: Task) => {
@@ -38,6 +46,7 @@ export const useTasksStore = defineStore(
         tasks.value.push(item);
       }
       toasts.add({
+        variant: "success",
         title: "Task has been created!", // todo: add more info to toast
       });
 
@@ -56,6 +65,7 @@ export const useTasksStore = defineStore(
         tasks.value[indexOf] = data;
 
         toasts.add({
+          variant: "success",
           title: "Task has been updated",
         });
       }
@@ -70,6 +80,7 @@ export const useTasksStore = defineStore(
         tasks.value.splice(index, 1);
 
         toasts.add({
+          variant: "success",
           title: "Task has been deleted",
         });
       }

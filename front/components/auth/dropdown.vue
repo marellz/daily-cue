@@ -3,7 +3,7 @@
     <button
       type="button"
       ref="targetToggle"
-      class="btn relative z-[2] rounded-3xl bg-white border-slate-100 hover:border-slate-300"
+      class="nav-link !text-sea-green !inline-flex space-x-1 items-center relative z-[2] rounded-3xl bg-white border-slate-100 hover:border-slate-300"
       @click="toggleUserDropdown"
     >
       <span>
@@ -13,26 +13,24 @@
     </button>
 
     <ul
-      class="absolute border border-slate-200 rounded-3xl transform transition z-[1] w-full overflow-hidden top-0 p-3 space-y-2 bg-white"
+      class="absolute border border-t-0 border-slate-200 rounded-b-3xl transform -bottom-[5px] transition z-[1] w-full overflow-hidden p-3 space-y-2 bg-white"
       :style="{
-        height: userDropdownActive ? 'auto' : `${targetToggleHeight}px`,
-        paddingTop: userDropdownActive ? '50px' : '0',
-
+        // height: userDropdownActive ? 'auto' : `${targetToggleHeight}px`,
         // transform: userDropdownActive ? 'translateY(0)' : `translateY(-${targetToggleHeight}px)`
       }"
       :class="{
-        'opacity-0': !userDropdownActive,
-        'opacty-full': userDropdownActive,
+        'opacity-0 translate-y-[90%]': !userDropdownActive,
+        'opacty-full translate-y-full': userDropdownActive,
       }"
     >
       <li>
-        <a href="#" class="py-2 px-3 block text-sm">
+        <a href="#" class="py-2 px-4 flex rounded-full text-sm hover:bg-slate-200 ">
           <span>Go to profile</span>
         </a>
         <a
-          class="p-2 rounded-full block text-sm hover:bg-red-200 hover:text-red-500"
+          class="py-2 px-4 rounded-full flex text-sm hover:bg-red-200 hover:text-red-500"
           href="#"
-          @click.prevent="auth.logout"
+          @click.prevent="logout"
           >Logout</a
         >
       </li>
@@ -56,6 +54,11 @@ const toggleUserDropdown = () => {
 };
 
 const user = computed(() => auth.user ?? { name: "", email: "" });
+
+const logout = async () => {
+  await auth.logout()
+  useRouter().push('/')
+}
 
 onClickOutside(target, () => {
   userDropdownActive.value = false;

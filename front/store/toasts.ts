@@ -1,10 +1,12 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { v4 as uuidv4 } from "uuid";
+
+export type ToastVariant = "error" | "info" | "success";
 export interface Toast {
   id: string;
   title: string;
   description?: string;
-  variant?: "error" | "info" | "success";
+  variant?: ToastVariant;
   duration?: number;
   timeout_id?: any;
 }
@@ -19,7 +21,7 @@ export const useToastsStore = defineStore(
       let duration = toast.duration ?? 2000;
       toasts.value.push({ ...toast, id });
       let timeout = setTimeout(() => {
-        remove(id);
+        // remove(id);
       }, duration);
 
       toast.timeout_id = timeout;
@@ -29,7 +31,7 @@ export const useToastsStore = defineStore(
     const remove = (id: string) => {
       let index = toasts.value.findIndex((t) => t.id === id);
       let toast = toasts.value[index];
-      if (toast.timeout_id) {
+      if (toast && toast.timeout_id) {
         clearTimeout(toast.timeout_id);
       }
       toasts.value.splice(index, 1);

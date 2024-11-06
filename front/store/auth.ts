@@ -22,6 +22,7 @@ export const useAuthStore = defineStore(
     const handleAuthError = (error: string) => {
       errors.value = [error];
       toasts.add({
+        variant: "error",
         title: "Error during authentication",
         description: error,
       });
@@ -46,6 +47,7 @@ export const useAuthStore = defineStore(
           token.value = _token;
 
           toasts.add({
+            variant: "success",
             title: "Auth successful!",
             description: "YOU can now have access to your tasks",
           });
@@ -107,6 +109,7 @@ export const useAuthStore = defineStore(
 
           if (message) {
             toasts.add({
+              variant: "success",
               title: "Success!",
               description: message,
             });
@@ -126,19 +129,24 @@ export const useAuthStore = defineStore(
       token.value = null;
 
       toasts.add({
+        variant: "success",
         title: "Successfully logged out!",
       });
 
       return true;
     };
 
-    watch(token, (v: string | null) => {
-      $api.defaults.headers.common["Authorization"] = v;
-    });
+    const setToken = (value: string | null) => {
+      $api.defaults.headers.common["Authorization"] = value;
+    };
+
+    watch(token, setToken);
 
     const isAuthenticated = computed(
       () => user.value !== null && user.value !== undefined
     );
+
+    const firstName = computed(() => isAuthenticated && user.value ? user.value.name.split(' ')[0]: null)
 
     const clearErrors = () => {
       errors.value = [];
@@ -147,6 +155,8 @@ export const useAuthStore = defineStore(
     return {
       errors,
       user,
+      firstName,
+      token,
       loading,
       get,
       login,
