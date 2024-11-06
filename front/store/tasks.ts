@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { tags as dummyTags } from "@/data/tasks";
-import type { Task, Tag } from "~/types/task";
+import type { Task, Tag, TaskStatus } from "~/types/task";
 import { useToastsStore } from "./toasts";
 import moment from "moment";
 
@@ -13,15 +13,20 @@ export const useTasksStore = defineStore(
     const { $api } = useNuxtApp();
 
     const tasks = ref<Array<Task>>([]);
-    
-    const overdue = ref(0)
+
+    const overdue = ref(0);
     const urgent = ref(0);
     const current = ref(0);
 
     const tags = ref<Array<Tag>>(dummyTags);
 
-    const all = async () => {
-      const { data }: { data: Task[] } = await $api.get("/tasks");
+    const all = async (date: string, status: TaskStatus) => {
+      const { data }: { data: Task[] } = await $api.get(`tasks`, {
+        params: {
+          date,
+          status,
+        },
+      });
       tasks.value = data.map((task: Task) => {
         return { ...task, due_date: moment(task.due_date).toDate() };
       });
