@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "~/store/auth";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
@@ -32,6 +33,12 @@ export default defineNuxtPlugin(() => {
     },
     function (error) {
       // todo: handle errors, somwehow
+      const status = error.response.status
+      switch(status){
+        case 401:
+          useAuthStore().logout()
+          useRouter().push('/')
+      }
       return Promise.reject(error);
     }
   );
