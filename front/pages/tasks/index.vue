@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between space-x-4">
           <page-title> My Tasks </page-title>
           <div class="flex items-center space-x-3">
-            <button type="button" class="btn border-black">
+            <button type="button" class="btn border-black" @click="insightActive = true">
               <brain-circuit :size="20"/>
               <span>Insight</span>
             </button>
@@ -21,13 +21,13 @@
         <div class="mt-4">
           <date-week v-model="filters.date"></date-week>
         </div>
-        <perfect-scrollbar v-if="tasks.length" class="max-h-[50vh] mt-10">
-          <transition-group name="tasks" tag="ul" class="space-y-3 flex flex-col">
+        <template v-if="tasks.length">
+          <transition-group name="tasks" tag="ul" class="space-y-3 flex flex-col mt-10">
             <li v-for="task in tasks" :key="task._id">
               <task-item :task />
             </li>
           </transition-group>
-        </perfect-scrollbar>
+        </template>
         <template v-else>
           <div class="p-10 flex gap-10 items-center card mt-10 bg-slate-100">
             <img class="h-48" src="@/assets/images/empty.svg" alt="" />
@@ -43,6 +43,9 @@
     </div>
   </layout-container>
   <dataform-new-task ref="newTaskForm" />
+  <custom-modal title="Your insight" v-model:show="insightActive">
+    <task-insight />
+  </custom-modal>
 </template>
 
 <script lang="ts" setup>
@@ -61,8 +64,9 @@ const filters = ref<{
   date: null,
 });
 
-const tasks = computed(() => store.tasks)
+const insightActive = ref(false)
 
+const tasks = computed(() => store.tasks)
 const newTaskForm = ref();
 
 watch(

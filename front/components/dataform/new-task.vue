@@ -1,5 +1,5 @@
 <template>
-  <custom-modal :show="modalActive" @close="hideModal" title="Add a new task">
+  <custom-modal v-model:show="modalActive" title="Add a new task">
     <form @submit.prevent="submit">
       <div class="space-y-4">
         <form-input label="Task title" v-model="form.title" />
@@ -39,16 +39,8 @@ const newTask: Task = {
 
 const form = ref<Task>(newTask);
 
-const showModal = () => {
-  modalActive.value = true;
-};
-
-const hideModal = () => {
-  modalActive.value = false;
-};
-
 const launch = () => {
-  showModal();
+  modalActive.value = true
 };
 
 const submit = async () => {
@@ -63,7 +55,7 @@ const submit = async () => {
   const added = await store.create(task);
 
   if(added){
-    hideModal()
+    modalActive.value = false
   }
 };
 
