@@ -16,7 +16,7 @@
           label="Confirm password"
           required
         />
-        <base-button :loading="store.loading">
+        <base-button class="rounded-lg btn-primary":loading="store.loading">
           <span>Create account</span>
         </base-button>
         <dev-only>
@@ -35,6 +35,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
 import useFaker from '~/composables/useFaker'
+
 const { generateNewUser } = useFaker()
 
 interface RegistrationForm {

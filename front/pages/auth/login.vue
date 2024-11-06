@@ -9,7 +9,7 @@
           v-model="user.password"
           required
         />
-        <base-button :loading="store.loading">
+        <base-button class="rounded-lg btn-primary" :loading="store.loading">
           <span>Login</span>
         </base-button>
         <dev-only>
