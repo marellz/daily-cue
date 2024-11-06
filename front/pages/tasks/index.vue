@@ -23,12 +23,10 @@
             </button>
           </div>
         </div>
-        <div class="flex items-start space-x-4 mt-4">
-          <form-status v-model="filters.status"></form-status>
-        </div>
         <div class="mt-4">
-          <date-week v-model="filters.date"></date-week>
+          <task-filters v-model="filters"/>
         </div>
+
         <template v-if="tasks.length">
           <transition-group
             name="tasks"
