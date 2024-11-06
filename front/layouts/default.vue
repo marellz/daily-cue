@@ -8,7 +8,20 @@
             <nuxt-link :to class="font-medium py-2 px-4 block text-slate-400 hover:text-black"
               exact-active-class="!text-black">{{ label }}</nuxt-link>
           </li>
+          <template v-if="!isAuthenticated">
+            <li class="!ml-auto">
+              <nuxt-link to="/auth/login" class="font-medium">
+                <span>Login</span>
+              </nuxt-link>
+            </li>
+            <li>
+               <nuxt-link to="/auth/register" class="font-medium">
+                <span>Create account</span>
+              </nuxt-link>
+            </li>
+          </template>
         </ul>
+        <auth-dropdown v-if="isAuthenticated && user" />
       </div>
     </layout-container>
   </header>
@@ -29,6 +42,9 @@
   </footer>
 </template>
 <script lang="ts" setup>
+import { useAuthStore } from '~/store/auth';
+
+const auth = useAuthStore()
 const links = [
   {
     to: "/",
@@ -39,6 +55,7 @@ const links = [
     label: "Tasks",
   },
 ];
-const route = useRoute()
-const activeRoute = computed(() => route.path)
+const isAuthenticated = computed(() => auth.isAuthenticated)
+const user = computed(() => auth.user)
+
 </script>

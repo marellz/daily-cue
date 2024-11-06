@@ -5,11 +5,19 @@
         <div class="flex items-center justify-between space-x-4">
           <page-title> My Tasks </page-title>
           <div class="flex items-center space-x-3">
-            <button type="button" class="btn border-black" @click="insightActive = true">
-              <brain-circuit :size="20"/>
+            <button
+              type="button"
+              class="btn border-black"
+              @click="insightActive = true"
+            >
+              <brain-circuit :size="20" />
               <span>Insight</span>
             </button>
-            <button type="button" class="btn btn-primary" @click="newTaskForm.launch">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="newTaskForm.launch"
+            >
               <plus :size="20"></plus>
               <span>Add a new task</span>
             </button>
@@ -22,7 +30,11 @@
           <date-week v-model="filters.date"></date-week>
         </div>
         <template v-if="tasks.length">
-          <transition-group name="tasks" tag="ul" class="space-y-3 flex flex-col mt-10">
+          <transition-group
+            name="tasks"
+            tag="ul"
+            class="space-y-3 flex flex-col mt-10"
+          >
             <li v-for="task in tasks" :key="task._id">
               <task-item :task />
             </li>
@@ -55,6 +67,10 @@ import { Plus, BrainCircuit } from "lucide-vue-next";
 import moment, { type Moment } from "moment";
 import type { TaskStatus } from "~/types/task";
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const store = useTasksStore();
 const filters = ref<{
   status: TaskStatus;
@@ -64,9 +80,9 @@ const filters = ref<{
   date: null,
 });
 
-const insightActive = ref(false)
+const insightActive = ref(false);
 
-const tasks = computed(() => store.tasks)
+const tasks = computed(() => store.tasks);
 const newTaskForm = ref();
 
 watch(
@@ -79,22 +95,21 @@ watch(
 watch(
   () => filters.value,
   async ({ date, status }) => {
-
-    let dateString = date ? date : moment().format('YYYY-MM-DD')
-    await store.all(dateString, status)
-  }, {
-  deep: true
-}
-)
+    let dateString = date ? date : moment().format("YYYY-MM-DD");
+    await store.all(dateString, status);
+  },
+  {
+    deep: true,
+  }
+);
 
 onMounted(async () => {
-  let dateString = moment().format('YYYY-MM-DD')
-  await store.all(dateString, 'default');
+  let dateString = moment().format("YYYY-MM-DD");
+  await store.all(dateString, "default");
 });
 </script>
 <style lang="scss" scoped>
 .tasks {
-
   &-enter-to,
   &-leave-from {
     transform: translateX(0);
@@ -109,7 +124,7 @@ onMounted(async () => {
 
   &-leave-active,
   &-enter-active {
-    transition: all .15s ease;
+    transition: all 0.15s ease;
   }
 
   &-leave-active {

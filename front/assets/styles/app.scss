@@ -4,7 +4,7 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center whitespace-nowrap space-x-2 border rounded-full py-2 px-3 hover:border-black focus:border-gray-700;
+    @apply inline-flex items-center justify-center whitespace-nowrap space-x-2 border border-slate-500 rounded-full py-2 px-3 hover:border-black focus:border-gray-700;
 
     &.btn-primary {
       @apply bg-black border-black text-white;

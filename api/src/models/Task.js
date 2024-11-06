@@ -8,7 +8,7 @@ const TaskSchema = new mongoose.Schema(
     status: { type: String, default: "pending" },
     completed: { type: Boolean, default: false },
     tags: { type: Array },
-    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // If implementing authentication
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
