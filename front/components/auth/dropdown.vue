@@ -14,17 +14,16 @@
 
     <ul
       class="absolute border border-t-0 border-slate-200 rounded-b-3xl transform -bottom-[5px] transition z-[1] w-full overflow-hidden p-3 space-y-2 bg-white"
-      :style="{
-        // height: userDropdownActive ? 'auto' : `${targetToggleHeight}px`,
-        // transform: userDropdownActive ? 'translateY(0)' : `translateY(-${targetToggleHeight}px)`
-      }"
       :class="{
         'opacity-0 translate-y-[90%]': !userDropdownActive,
         'opacty-full translate-y-full': userDropdownActive,
       }"
     >
       <li>
-        <a href="#" class="py-2 px-4 flex rounded-full text-sm hover:bg-slate-200 ">
+        <a
+          href="#profile"
+          class="py-2 px-4 flex rounded-full text-sm hover:bg-slate-200"
+        >
           <span>Go to profile</span>
         </a>
         <a
@@ -43,12 +42,11 @@ import { ChevronDown } from "lucide-vue-next";
 import { onClickOutside } from "@vueuse/core";
 
 const target = ref();
-const targetToggle = ref()
-const targetToggleHeight = ref(0)
+const targetToggle = ref();
+const targetToggleHeight = ref(0);
 const auth = useAuthStore();
 const userDropdownActive = ref(false);
 const toggleUserDropdown = () => {
-
   //todo: implement dropdown effect properly
   userDropdownActive.value = !userDropdownActive.value;
 };
@@ -56,17 +54,17 @@ const toggleUserDropdown = () => {
 const user = computed(() => auth.user ?? { name: "", email: "" });
 
 const logout = async () => {
-  await auth.logout()
-  useRouter().push('/')
-}
+  await auth.logout();
+  useRouter().push("/");
+};
 
 onClickOutside(target, () => {
   userDropdownActive.value = false;
 });
 
 onMounted(() => {
-  if(targetToggle.value){
-    targetToggleHeight.value = targetToggle.value.clientHeight
+  if (targetToggle.value) {
+    targetToggleHeight.value = targetToggle.value.clientHeight;
   }
-})
+});
 </script>

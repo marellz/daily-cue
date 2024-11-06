@@ -1,9 +1,12 @@
 <template>
   <layout-container>
-    <div class="mx-auto max-w-xl">
+    <div class="mx-auto max-w-2xl">
       <div>
         <div class="flex items-center justify-between space-x-4">
-          <page-title> My Tasks </page-title>
+          <div>
+            <h1 class="text-2xl font-bold text-sea-green">Good {{ dayTime }}, {{ user }}!</h1>
+            <p>What do you feel like adding today?</p>
+          </div>
           <div class="flex items-center space-x-3">
             <button
               type="button"
@@ -39,7 +42,7 @@
           </transition-group>
         </template>
         <template v-else>
-          <div class="p-10 flex gap-10 items-center card mt-10 bg-slate-100">
+          <div class="p-10 flex gap-10 items-center card border-0 mt-10 bg-tea-green/50">
             <img class="h-48" src="@/assets/images/empty.svg" alt="" />
             <div class="mb-10 space-y-2">
               <h1 class="font-semibold text-3xl">No tasks.</h1>
@@ -64,12 +67,14 @@ import { useTasksStore } from "~/store/tasks";
 import { Plus, BrainCircuit } from "lucide-vue-next";
 import moment, { type Moment } from "moment";
 import type { TaskStatus } from "~/types/task";
+import { useAuthStore } from "~/store/auth";
 
 definePageMeta({
   middleware: "auth",
 });
 
 const store = useTasksStore();
+const auth = useAuthStore();
 const filters = ref<{
   status: TaskStatus;
   date: null | string;
@@ -83,23 +88,36 @@ const insightActive = ref(false);
 const tasks = computed(() => store.tasks);
 const newTaskForm = ref();
 
-watch(
-  () => filters.value.date,
-  () => {
-    filters.value.status = "default";
-  }
+const user = computed(() =>
+  auth.user ? auth.user.name.split(" ")[0] : "Unknown"
 );
+const dayTime = computed(() => {
+  let h = moment().hours();
+  let t;
+  switch (true) {
+    case h >= 6 && h < 12:
+      t = "morning";
+      break;
 
-watch(
-  () => filters.value,
-  async ({ date, status }) => {
-    let dateString = date ? date : moment().format("YYYY-MM-DD");
-    await store.all(dateString, status);
-  },
-  {
-    deep: true,
+    case h >= 12 && h < 17:
+      t = "afternoon";
+      break;
+
+    case h >= 17 && h < 21:
+      t = "evening";
+      break;
+
+    case h >= 21:
+      t = "night";
+      break;
+
+    default:
+      t = "time";
+      break;
   }
-);
+
+  return t;
+});
 
 onMounted(async () => {
   let dateString = moment().format("YYYY-MM-DD");
