@@ -21,7 +21,7 @@ export const useToastsStore = defineStore(
       let duration = toast.duration ?? 2000;
       toasts.value.push({ ...toast, id });
       let timeout = setTimeout(() => {
-        // remove(id);
+        remove(id);
       }, duration);
 
       toast.timeout_id = timeout;

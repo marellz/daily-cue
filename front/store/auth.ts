@@ -105,8 +105,6 @@ export const useAuthStore = defineStore(
           token.value = _token;
           user.value = data;
 
-          console.log({ data, _token });
-
           if (message) {
             toasts.add({
               variant: "success",

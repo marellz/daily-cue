@@ -33,11 +33,16 @@ export default defineNuxtPlugin(() => {
     },
     function (error) {
       // todo: handle errors, somwehow
-      const status = error.response.status
-      switch(status){
+      const status = error.response.status;
+      const route = useRoute();
+      switch (status) {
         case 401:
-          useAuthStore().logout()
-          useRouter().push('/')
+          useAuthStore().logout();
+
+          // todo, use regex next time!
+          if (!["/auth/login", "/auth/register"].includes(route.path)) {
+            useRouter().push("/");
+          }
       }
       return Promise.reject(error);
     }
