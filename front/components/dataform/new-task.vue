@@ -40,7 +40,6 @@ const newTask: Task = {
 };
 
 const form = ref<Task>(newTask);
-
 const launch = () => {
   modalActive.value = true
 };

@@ -3,9 +3,11 @@
     <div class="mx-auto max-w-2xl">
       <div>
         <div class="flex items-center justify-between space-x-4">
-          <div>
-            <h1 class="text-2xl font-bold text-sea-green">Good {{ dayTime }}, {{ user }}!</h1>
-            <p>What do you feel like adding today?</p>
+          <div class="flex-auto animate-home">
+            <client-only>
+              <h1 class="text-2xl font-bold text-sea-green">Good {{ dayTime }}, {{ user }}!</h1>
+              <p>What do you feel like adding today?</p>
+            </client-only>
           </div>
           <div class="flex items-center space-x-3">
             <button
@@ -65,7 +67,6 @@
 // TODO: view by day, view by tag, view by status
 import { useTasksStore } from "~/store/tasks";
 import { Plus, BrainCircuit } from "lucide-vue-next";
-import moment, { type Moment } from "moment";
 import type { TaskStatus } from "~/types/task";
 import { useAuthStore } from "~/store/auth";
 import useMoment from "~/composables/useMoment";
