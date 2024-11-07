@@ -7,8 +7,10 @@ export const index = async (req, res) => {
   try {
     let due_date;
 
-    if (req.query.date) {
-      due_date = moment(req.query.date);
+    let { date, status } = req.query;
+
+    if (date) {
+      due_date = moment(date);
     } else {
       due_date = moment();
     }
@@ -22,6 +24,9 @@ export const index = async (req, res) => {
       due_date: { $gte: day_start, $lte: day_end },
       user,
     };
+    if (status !== "default") {
+      query_parameters.status = status;
+    }
 
     const data = await Task.find(query_parameters);
 
