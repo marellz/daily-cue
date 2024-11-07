@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import config from "../../config/db.js";
-import tasks from "#data/tasks.js";
+import { tasks as taskSeeder } from "#data/tasks.js";
 import TaskModel from "#models/Task.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 const run = async () => {
+  const tasks = await taskSeeder();
   try {
     // reset
     await TaskModel.deleteMany();
