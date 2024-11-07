@@ -1,6 +1,7 @@
 import Task from "#models/Task.js";
 import User from "#models/User.js";
 import moment from "moment";
+
 export const index = async (req, res) => {
   // TODO: localised/format date
 
@@ -24,6 +25,7 @@ export const index = async (req, res) => {
       due_date: { $gte: day_start, $lte: day_end },
       user,
     };
+
     if (status !== "default") {
       query_parameters.status = status;
     }
@@ -66,7 +68,7 @@ export const store = async (req, res) => {
       due_date = moment().add(2, "hours");
     }
 
-    const { _id : user } = await User.findOne({ email: req.user.email });
+    const { _id: user } = await User.findOne({ email: req.user.email });
 
     const data = await Task.create({
       title,
@@ -89,7 +91,7 @@ export const update = async (req, res) => {
   try {
     const { id } = req.params;
     const payload = { ...req.body };
-    
+
     payload.completed = false;
 
     if (payload.status === "completed") {
@@ -133,18 +135,68 @@ export const destroy = async (req, res) => {
   }
 };
 
+export const weekly = async (req, res) => {
+  try {
+    const { start_date } = await req.query;
+    const user = await User.findOne({ email: req.user.email });
+
+    const startDate = moment(start_date);
+    const endDate = startDate.clone().add(7, "days");
+    const parameters = {
+      user,
+      due_date: {
+        $gte: startDate.startOf("day").toDate(),
+        $lte: endDate.endOf("day").toDate(),
+      },
+    };
+    const tasks = await Task.find(parameters);
+
+    const days = Array(7)
+      .fill()
+      .map((d, i) => {
+        let thisDay = startDate.clone().add(i, "day");
+        const thisDayTasks = tasks.filter((t) => {
+          return moment(t.due_date).isSame(thisDay, "day");
+        });
+
+        return {
+          day: thisDay.format("YYYY-MM-DD"),
+          total: thisDayTasks.length,
+          pending: thisDayTasks.filter((t) => t.status === "pending").length,
+          in_progress: thisDayTasks.filter((t) => t.status === "in_progress")
+            .length,
+          completed: thisDayTasks.filter(
+            (t) => t.status === "completed" && t.completed
+          ).length,
+        };
+      });
+
+    return res.json({
+      days,
+      startDate: startDate.toDate(),
+      endDate: endDate.toDate(),
+    });
+  } catch ({ message }) {
+    return res.status(500).json({
+      error: "Error getting weekly activity",
+      message,
+    });
+  }
+};
+
+// middleware
 export const intercept = async (req, res, next, id) => {
   try {
     const task = await Task.findById(id);
     // task exists
     if (task) {
       // task belongs to user
-      
+
       const user = await User.findOne({ email: req.user.email });
       // const taskOwner = typeof task.user
-      const currentUser = user._id
+      const currentUser = user._id;
 
-      const forbidden = !task.user.equals(currentUser)
+      const forbidden = !task.user.equals(currentUser);
 
       if (forbidden) {
         return res.status(403).json({

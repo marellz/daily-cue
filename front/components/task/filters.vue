@@ -25,95 +25,114 @@
     </div>
   </div>
 
-  <!-- bottom bar -->
-  
-    <template v-if="weeksDisplayActive">
-      <div v-if="!days.length" class="mt-4">
-        <custom-loader />
-      </div>
+  <template v-if="weeksDisplayActive">
+    <div v-if="!days.length" class="mt-4">
+      <custom-loader />
+    </div>
 
-      <div v-else class="bg-tea-green/50 rounded-xl flex items-center justify-between mt-4">
-        <div class="flex items-center w-full">
-          <div
-            v-for="(day, i) in days"
-            :key="day.dateString"
-            class="flex-auto p-2"
+    <div
+      v-else
+      class="bg-tea-green/50 rounded-xl flex items-center justify-between mt-4"
+    >
+      <div class="flex items-start w-full">
+        <div
+          v-for="(day, i) in days"
+          :key="day.dateString"
+          class="flex-auto p-2"
+        >
+          <input
+            type="radio"
+            name="day"
+            class="absolute h-0 w-0 opacity-0"
+            v-model="filters.date"
+            :id="day.dateString"
+            :value="day.dateString"
+          />
+          <label
+            :for="day.dateString"
+            role="button"
+            class="p-3 flex flex-col rounded-xl text-center focus:ring focus:ring-celadon hover:ring hover:ring-celadon/25"
+            :class="{
+              'ring ring-celadon': day.isToday,
+              'bg-celadon': day.dateString === filters.date,
+            }"
           >
-            <input
-              type="radio"
-              name="day"
-              class="absolute h-0 w-0 opacity-0"
-              v-model="filters.date"
-              :id="day.dateString"
-              :value="day.dateString"
-            />
-            <label
-              :for="day.dateString"
-              role="button"
-              class="p-3 flex flex-col rounded-xl text-center focus:ring focus:ring-celadon hover:ring hover:ring-celadon/25"
-              :class="{
-                'ring ring-celadon': day.isToday,
-                'bg-celadon': day.dateString === filters.date,
-              }"
-            >
-              <p class="uppercase text-xs tracking-widest opacity-50">
-                {{ weekdaysShort[i] }}
-              </p>
-              <h1 class="text-4xl font-bold">
-                {{ day.date }}
-              </h1>
-              <p class="text-xs opacity-50">
-                {{ day.month }}
-              </p>
-              <div class="text-center space-x-1">
-                <span
-                  class="inline-block h-1.5 w-1.5 rounded-full bg-black"
-                ></span>
-              </div>
-            </label>
-          </div>
+            <p class="uppercase text-xs tracking-widest opacity-50">
+              {{ weekdaysShort[i] }}
+            </p>
+            <h1 class="text-4xl font-bold">
+              {{ day.date }}
+            </h1>
+            <p class="text-xs opacity-50">
+              {{ day.month }}
+            </p>
+
+            <div class="text-center space-x-1" v-if="day.activity">
+              <span
+                v-if="day.activity.pending"
+                class="inline-block h-1.5 w-1.5 rounded-full bg-amber-500"
+              ></span>
+              <span
+                v-if="day.activity.in_progress"
+                class="inline-block h-1.5 w-1.5 rounded-full bg-blue-500"
+              ></span>
+              <span
+                v-if="day.activity.completed"
+                class="inline-block h-1.5 w-1.5 rounded-full bg-green-500"
+              ></span>
+            </div>
+          </label>
         </div>
       </div>
-    </template>
+    </div>
+  </template>
 </template>
 <script lang="ts" setup>
-import moment from "moment";
 import { useTasksStore } from "~/store/tasks";
-import { type TaskStatus } from "~/types/task";
+import { type TaskActivity, type TaskStatus } from "~/types/task";
+import useMoment, { weekdaysShort } from "@/composables/useMoment";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-vue-next";
+import { type Moment } from "moment";
 
 interface TaskFilter {
   status: TaskStatus;
   date: string;
 }
-const store = useTasksStore();
-// weekday component logic
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-vue-next";
-import type { Moment } from "moment";
-
-// const moment = useMoment();
 
 interface Day {
   date: number;
   month: string;
   isToday: boolean;
   dateString: string;
+  activity: TaskActivity | null;
 }
+const store = useTasksStore();
+const moment = useMoment();
 
-const weekdaysShort = computed(() => moment.weekdaysShort());
+const filters = defineModel<TaskFilter>({ default: {} });
 const week = ref<number>(moment().week());
 const months = computed(() => moment.monthsShort());
 const days = ref<Array<Day>>([]);
 const firstDay = ref<Moment>(moment().startOf("week"));
 
-const setDays = () => {
+const setDays = async () => {
   const startDay = firstDay.value.clone();
+  const from = firstDay.value.format("YYYY-MM-DD");
+  const to = firstDay.value.clone().add(1, "week").format("YYYY-MM-DD");
+
+  store.setDateRange({
+    from,
+    to,
+  });
+
   days.value = Array(7)
     .fill({})
-    .map(() => {
-      let day = startDay.add(1, "days");
+    .map((d, index) => {
+      let day = startDay.clone().add(index, "days");
 
       return {
         date: day.date(),
+        activity: null,
         isToday: moment().isSame(day, "day"),
         month: months.value[day.month()],
         dateString: day.format("YYYY-MM-DD"),
@@ -121,22 +140,18 @@ const setDays = () => {
     });
 };
 
-// const model = defineModel();
+const setActivity = () => {
+  days.value = days.value.map((d, i) => {
+    const activity = store.weeklyActivity ? store.weeklyActivity[i] : null;
+    return {
+      ...d,
+      activity,
+    };
+  });
+};
 
 const toggleWeek = (forward?: boolean) => {
-  if (forward) {
-    if (week.value === 52) {
-      week.value = 1;
-    } else {
-      week.value++;
-    }
-  } else {
-    if (week.value === 1) {
-      week.value = 52;
-    } else {
-      week.value--;
-    }
-  }
+  week.value = firstDay.value.add(forward ? 1 : -1, "week").week();
 
   firstDay.value = moment().week(week.value).startOf("week");
 
@@ -146,33 +161,32 @@ const toggleWeek = (forward?: boolean) => {
     filters.value.date = moment().format("YYYY-MM-DD");
   }
 };
+
 const weeksDisplayActive = ref(false);
+
 const toggleWeekDisplay = () => {
   weeksDisplayActive.value = !weeksDisplayActive.value;
 };
 
 onMounted(() => {
   filters.value.date = moment().format("YYYY-MM-DD");
+
   setDays();
 });
 
+watch(() => store.weeklyActivity, setActivity);
+
 watch(week, setDays);
 
-/// filters in general
-const filters = defineModel<TaskFilter>({ default: {} });
-
 watch(
-  () => filters.value.date,
-  () => {
-    filters.value.status = "default";
-  }
-);
-
-watch(
-  () => filters.value,
-  async ({ date, status }) => {
+  filters,
+  async ({ date, status }, { date: dateBefore }) => {
     let dateString = date ? date : moment().format("YYYY-MM-DD");
     await store.all(dateString, status);
+
+    if (date !== dateBefore) {
+      filters.value.status = "default";
+    }
   },
   {
     deep: true,

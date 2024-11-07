@@ -10,4 +10,8 @@ const useMoment = () => {
   return moment;
 };
 
+export const weekdaysShort = computed(() =>
+  moment.weekdaysShort().slice(1).concat(moment.weekdaysShort()[0])
+);
+
 export default useMoment;

@@ -21,3 +21,11 @@ export interface Status {
   label: string;
   color: string;
 }
+
+export interface TaskActivity {
+  day: string;
+  total: number;
+  pending: number;
+  in_progress: number;
+  completed: number;
+}

@@ -1,14 +1,20 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { tags as dummyTags } from "@/data/tasks";
-import type { Task, Tag, TaskStatus } from "~/types/task";
+import type { Task, Tag, TaskStatus, TaskActivity } from "~/types/task";
 import { useToastsStore } from "./toasts";
 import useMoment from "~/composables/useMoment";
+
+interface ActivityDateRange {
+  from: string;
+  to: string;
+}
 
 export const useTasksStore = defineStore(
   "tasks",
   () => {
     const moment = useMoment();
+
     const toasts = useToastsStore();
 
     const { $api } = useNuxtApp();
@@ -18,6 +24,10 @@ export const useTasksStore = defineStore(
     const overdue = ref(0);
     const urgent = ref(0);
     const current = ref(0);
+
+    const dateRange = ref<ActivityDateRange | null>();
+
+    const weeklyActivity = ref<Array<TaskActivity>>();
 
     const tags = ref<Array<Tag>>(dummyTags);
 
@@ -35,9 +45,9 @@ export const useTasksStore = defineStore(
       } catch (error: any) {
         console.error(error);
         toasts.add({
-          variant:"error",
-          title:"Error getting tasks",
-        })
+          variant: "error",
+          title: "Error getting tasks",
+        });
       }
     };
 
@@ -69,6 +79,9 @@ export const useTasksStore = defineStore(
           variant: "success",
           title: "Task has been updated",
         });
+
+        // refresh week activity
+        getWeeklyActivity();
       }
     };
 
@@ -87,6 +100,46 @@ export const useTasksStore = defineStore(
       }
     };
 
+    const getWeeklyActivity = async () => {
+      if (!dateRange.value) {
+        console.log("didn't update weekly");
+        return;
+      }
+
+      let start_date = dateRange.value.from;
+
+      const {
+        days,
+        error,
+        message,
+      }: { days?: Array<TaskActivity>; error?: string; message?: string } =
+        await $api.get("/activity/weekly", {
+          params: {
+            start_date,
+          },
+        });
+
+      if (error && message) {
+        toasts.add({
+          variant: "error",
+          title: error,
+          description: message,
+        });
+
+        return null;
+      }
+
+      return (weeklyActivity.value = days);
+    };
+
+    const setDateRange = (range: ActivityDateRange) => {
+      if (range) {
+        dateRange.value = range;
+      }
+    };
+
+    watch(() => dateRange.value, getWeeklyActivity, { deep: true });
+
     return {
       tasks,
       tags,
@@ -97,6 +150,11 @@ export const useTasksStore = defineStore(
       create,
       update,
       destroy,
+
+      dateRange,
+      weeklyActivity,
+      setDateRange,
+      getWeeklyActivity,
     };
   },
   {
