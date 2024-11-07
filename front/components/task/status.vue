@@ -1,45 +1,49 @@
 <template>
-  <div class="space-x-3" ref="target">
+  <div class="space-x-2 flex items-center" ref="target">
     <button
+      v-if="status"
       type="button"
-      class="tag"
-      :class="[variant(status)]"
+      class="tag inline-flex items-center space-x-2"
+      @mouseenter="showNextArrow = true"
+      @mouseleave="showNextArrow = false"
+      :class="[variant(statusName)]"
       @click="showNext = !showNext"
     >
       <span>
-        {{ status }}
+        {{ status.label }}
       </span>
+
+      <transition name="status">
+        <ArrowRight v-if="showNextArrow || showNext" :size="16" class="text-slate-500"/>
+      </transition>
+
     </button>
     <template v-if="nextStatus">
-      <transition name="status" mode="out-in">
-        <button
-          v-if="showNext"
-          type="button"
-          class="tag"
-          :class="[variant(nextStatus.name)]"
-          @click="updateStatus(nextStatus.name)"
-        >
-          <span>
-            {{ nextStatus.name }}
-          </span>
-        </button>
+      <transition name="status">
+        <div v-if="showNext" class="flex items-center space-x-2">
+          <button
+            type="button"
+            class="tag"
+            :class="variant(nextStatus.name)"
+            @click="updateStatus(nextStatus.name)"
+          >
+            <span>
+              {{ nextStatus.label }}
+            </span>
+          </button>
+        </div>
       </transition>
     </template>
   </div>
 </template>
 <script lang="ts" setup>
 import { type Status, type Task, type TaskStatus } from "@/types/task";
-import { status as statusTags } from "@/data/tasks";
+import { status as statusTags, StatusEnum } from "@/data/tasks";
 import { onClickOutside } from "@vueuse/core";
 import { useTasksStore } from "~/store/tasks";
+import { ArrowRight } from "lucide-vue-next";
+
 const store = useTasksStore()
-enum StatusEnum {
-  default = "bg-slate-200 text-gray-500",
-  completed = "bg-green-100 text-green-500",
-  in_progress = "bg-blue-100 text-blue-500",
-  pending = "bg-amber-100 text-amber-500",
-  overdue = "bg-red-100 text-red-500",
-}
 
 const props = withDefaults(
   defineProps<{
@@ -49,24 +53,26 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(["update-status"]);
-const status = computed(() => props.task.status ?? "default");
+const statusName = computed(() => props.task.status ?? "default");
+const status = computed(() => statusTags.find((st)=>st.name === statusName.value))
 const nextStatus = computed(() => {
-  if (status.value === "completed") {
+  if (statusName.value === "completed") {
     return null;
   } else {
-    let index = statusTags.findIndex((s: Status) => s.name === status.value);
+    let index = statusTags.findIndex((s: Status) => s.name === statusName.value);
     return statusTags[index + 1];
   }
 });
 const target = ref();
 const showNext = ref(false);
+const showNextArrow = ref(false);
 onClickOutside(target, () => {
   showNext.value = false;
 });
 const variant = (_status: TaskStatus) => StatusEnum[_status];
-const updateStatus = async (status: TaskStatus) => {
+const updateStatus = async (_status: TaskStatus) => {
   if (props.task._id) {
-    await store.update(props.task._id, {...props.task, status });
+    await store.update(props.task._id, {...props.task, status: _status });
     showNext.value = false
   }
 };

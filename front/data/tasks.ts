@@ -17,7 +17,7 @@ export const status: Array<Status> = [
     id: 1,
     name: "default",
     label: "Default",
-    color: "bg-slaet-200"
+    color: "bg-slate-200"
   },
   {
     id: 2,
@@ -38,3 +38,11 @@ export const status: Array<Status> = [
     color: "bg-green-500"
   },
 ];
+
+export enum StatusEnum {
+  default = "bg-slate-200 text-gray-500",
+  completed = "bg-green-100 text-green-500",
+  in_progress = "bg-blue-100 text-blue-500",
+  pending = "bg-amber-100 text-amber-500",
+  overdue = "bg-red-100 text-red-500",
+}
