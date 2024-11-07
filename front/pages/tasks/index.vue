@@ -68,11 +68,13 @@ import { Plus, BrainCircuit } from "lucide-vue-next";
 import moment, { type Moment } from "moment";
 import type { TaskStatus } from "~/types/task";
 import { useAuthStore } from "~/store/auth";
+import useMoment from "~/composables/useMoment";
 
 definePageMeta({
   middleware: "auth",
 });
 
+const moment = useMoment()
 const store = useTasksStore();
 const auth = useAuthStore();
 const filters = ref<{

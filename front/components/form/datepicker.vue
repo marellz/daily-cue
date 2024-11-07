@@ -55,8 +55,10 @@
 </template>
 <script lang="ts" setup>
 import { ArrowLeft, ArrowRight, Calendar } from "lucide-vue-next";
-import moment, { type Moment } from "moment";
+import { type Moment } from "moment";
+import useMoment from "~/composables/useMoment";
 import { onClickOutside } from "@vueuse/core";
+
 withDefaults(
   defineProps<{
     disableOlder?: boolean;
@@ -64,7 +66,9 @@ withDefaults(
   {
     disableOlder: false,
   }
-);
+  );
+
+const moment = useMoment()
 const datepicker = ref();
 const weekDays = computed(() => "SMTWTFS".split(""));
 const model = defineModel({});

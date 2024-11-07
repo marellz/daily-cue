@@ -3,11 +3,12 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { tags as dummyTags } from "@/data/tasks";
 import type { Task, Tag, TaskStatus } from "~/types/task";
 import { useToastsStore } from "./toasts";
-import moment from "moment";
+import useMoment from "~/composables/useMoment";
 
 export const useTasksStore = defineStore(
   "tasks",
   () => {
+    const moment = useMoment();
     const toasts = useToastsStore();
 
     const { $api } = useNuxtApp();

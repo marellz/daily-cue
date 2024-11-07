@@ -25,8 +25,10 @@
 import type { Task } from "~/types/task";
 import { CirclePlus } from "lucide-vue-next";
 import { useTasksStore } from "~/store/tasks";
-import moment, { type Moment } from "moment";
+import { type Moment } from "moment";
+import useMoment from "~/composables/useMoment";
 
+const moment = useMoment()
 const store = useTasksStore();
 const modalActive = ref(false);
 const selectedDate = ref<Moment | null>(null);
