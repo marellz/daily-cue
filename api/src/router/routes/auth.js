@@ -6,6 +6,7 @@ import {
   logout,
   recoverPassword,
   resetPassword,
+  updatePassword,
 } from "#controllers/AuthController.js";
 
 import verifyToken from "#middleware/verify-token.js";
@@ -18,7 +19,10 @@ router.post("/recover-password", recoverPassword);
 router.post("/reset-password/:token", resetPassword);
 
 // needs token
+router.put("/password", verifyToken, updatePassword);
+
+
 router.get("/me", [verifyToken], user);
-router.post("/logout", [verifyToken], logout); 
+router.post("/logout", [verifyToken], logout);
 
 export default router;

@@ -15,17 +15,17 @@
     <ul
       class="absolute border border-t-0 border-slate-200 rounded-b-3xl transform -bottom-[5px] transition z-[1] w-full overflow-hidden p-3 space-y-2 bg-white"
       :class="{
-        'opacity-0 translate-y-[90%]': !userDropdownActive,
-        'opacty-full translate-y-full': userDropdownActive,
+        'opacity-0 translate-y-[90%] invisible': !userDropdownActive,
+        'opacity-full translate-y-full visible': userDropdownActive,
       }"
     >
       <li>
-        <a
-          href="#profile"
+        <nuxt-link
+          to="/user/profile"
           class="py-2 px-4 flex rounded-full text-sm hover:bg-slate-200"
         >
           <span>Go to profile</span>
-        </a>
+        </nuxt-link>
         <a
           class="py-2 px-4 rounded-full flex text-sm hover:bg-red-200 hover:text-red-500"
           href="#"
@@ -46,6 +46,7 @@ const targetToggle = ref();
 const targetToggleHeight = ref(0);
 const auth = useAuthStore();
 const userDropdownActive = ref(false);
+const route = useRoute()
 const toggleUserDropdown = () => {
   //todo: implement dropdown effect properly
   userDropdownActive.value = !userDropdownActive.value;
@@ -61,6 +62,10 @@ const logout = async () => {
 onClickOutside(target, () => {
   userDropdownActive.value = false;
 });
+
+watch(() => route.path,() => {
+  userDropdownActive.value = false
+})
 
 onMounted(() => {
   if (targetToggle.value) {

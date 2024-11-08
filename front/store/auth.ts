@@ -8,6 +8,7 @@ import type {
   RegisterResponse,
   GetUserResponse,
 } from "@/types/users";
+import type { PasswordForm, UserForm } from "~/types/form";
 
 export const useAuthStore = defineStore(
   "auth",
@@ -134,6 +135,66 @@ export const useAuthStore = defineStore(
       return true;
     };
 
+    const updateUserInformation = async (form: UserForm) => {
+      const {
+        updated,
+        error,
+        message,
+      }: { updated: boolean; error?: string; message?: string } =
+        await $api.put("/user/profile", form);
+
+      if (error) {
+        toasts.add({
+          variant: "error",
+          title: error ?? "Error updating profile",
+        });
+
+        console.error({ error, message });
+      }
+
+      toasts.add({
+        variant: "success",
+        title: "Updated profile successfully!",
+      });
+
+      return updated
+    };
+
+    const updatePassword = async (form: PasswordForm) => {
+
+      // todo: implement form validation for these actions
+      try {
+        const {
+          updated,
+          error,
+          message,
+        }: { updated: boolean; error?: string; message?: string } =
+          await $api.put("/auth/password", form);
+  
+        if (error) {
+          toasts.add({
+            variant: "error",
+            title: error ?? "Error updating password",
+          });
+  
+          console.error({ error, message });
+        }
+  
+        toasts.add({
+          variant: "success",
+          title: "Updated password successfully!",
+        });
+  
+        return updated
+        
+      } catch (error: any) {
+        toasts.add({
+          variant: "error",
+          title: error.response.data.error ?? "Error updating password",
+        });
+      }
+    };
+
     const setToken = (value: string | null) => {
       $api.defaults.headers.common["Authorization"] = value;
     };
@@ -144,7 +205,9 @@ export const useAuthStore = defineStore(
       () => user.value !== null && user.value !== undefined
     );
 
-    const firstName = computed(() => isAuthenticated && user.value ? user.value.name.split(' ')[0]: null)
+    const firstName = computed(() =>
+      isAuthenticated && user.value ? user.value.name.split(" ")[0] : null
+    );
 
     const clearErrors = () => {
       errors.value = [];
@@ -162,6 +225,9 @@ export const useAuthStore = defineStore(
       logout,
       clearErrors,
       isAuthenticated,
+
+      updateUserInformation,
+      updatePassword,
     };
   },
   {

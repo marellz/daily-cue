@@ -42,6 +42,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid email/password" });
     }
 
+    // todo: sign with user id, not email
     const token = generateToken(user.email);
 
     res.status(200).json({ token, data: user });
@@ -82,10 +83,72 @@ export const register = async (req, res) => {
   }
 };
 
-export const logout = (req, res, next) => {
-  return res.json({ message: 'Logged out' });
+export const logout = (req, res) => {
+  return res.json({ message: "Logged out" });
 };
 
-export const recoverPassword = () => {};
+export const recoverPassword = () => {
+  try {
+    // find user
 
-export const resetPassword = () => {};
+    // generate token
+
+    // send email to user with token link
+
+  } catch (error) {
+    
+  }
+};
+
+export const resetPassword = () => {
+
+  // verify token
+
+  // admit passwords
+
+  // change the password
+};
+
+
+export const updatePassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(404).json({
+        updated: false,
+        error: "User in request does not exist",
+      });
+    }
+
+    const { current, new_pass } = req.body;
+
+    const passwordMatches = await bcrypt.compare(current, user.password);
+
+    if (!passwordMatches) {
+      return res.status(400).json({
+        error: "Current password is not valid",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(new_pass, 10);
+
+    await User.findOneAndUpdate(
+      { email: user.email },
+      {
+        password: hashedPassword,
+      }
+    );
+
+    return res.json({
+      updated: true,
+    });
+
+  } catch ({ message }) {
+    return res.status(500).json({
+      updated: false,
+      error: "Error updating password",
+      message,
+    });
+  }
+};
