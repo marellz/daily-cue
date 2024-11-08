@@ -1,11 +1,11 @@
-import { faker, simpleFaker } from "@faker-js/faker";
+import { faker, simpleFaker, type Casing } from "@faker-js/faker";
 import { type LoginForm, type User } from "@/types/users";
 import { useToastsStore } from "~/store/toasts";
 const useFaker = () => {
   const { $api } = useNuxtApp();
 
   const generateNewUser = () => {
-    const password = 'secret21'
+    const password = "secret21";
     // simpleFaker.string.alphanumeric({
     //   length: { min: 6, max: 12 },
     //   casing: "mixed",
@@ -48,8 +48,15 @@ const useFaker = () => {
     return user;
   };
 
+  const generateString = (length: number = 10, casing: Casing = "mixed") =>
+    faker.string.alphanumeric({
+      length,
+      casing,
+    });
+
   return {
     generateNewUser,
+    generateString,
     getRandomUser,
   };
 };
