@@ -1,24 +1,24 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex justify-center items-start pt-20 invisible"
+    class="fixed inset-0 z-50 bg-tea-green/25 backdrop-blur-sm flex justify-center items-start pt-20 invisible"
     :class="{ '!visible': show }"
   >
     <div
-      class="card bg-white relative z-10 w-full"
+      class="!p-0 relative z-10 w-full"
       :class="[width]"
       ref="modal"
     >
-      <div class="px-2 py-3 flex items-center">
+      <div class="p-3 rounded-t-xl pt-4 flex items-center bg-slate-100">
         <slot name="header">
           <div class="flex-auto">
-            <h1 class="text-4xl font-medium">{{ title }}</h1>
+            <h1 class="text-2xl font-bold">{{ title }}</h1>
           </div>
         </slot>
-        <button type="button" class="p-2" @click="close">
-          <x />
+        <button type="button" class="p-1 bg-slate-200 rounded-full hover:bg-black hover:text-white" @click="close">
+          <x :size="20" />
         </button>
       </div>
-      <div class="border-t px-2 py-5">
+      <div class="p-3 bg-white rounded-b-xl">
         <slot />
       </div>
     </div>
