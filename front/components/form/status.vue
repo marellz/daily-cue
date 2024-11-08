@@ -38,8 +38,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { status as dummyStatusTag } from "@/data/tasks";
-import { type Status, type TaskStatus } from "@/types/task";
+import { statusOptions as dummyStatusTag } from "@/data/tasks";
+import { type StatusOptions, type TaskStatus, type TaskStatusOptions } from "@/types/task";
 import { StatusEnum } from "@/data/tasks";
 import { onClickOutside } from "@vueuse/core";
 import { Check } from "lucide-vue-next";
@@ -52,9 +52,9 @@ const props = withDefaults(
   }
 );
 
-const tags = ref<Array<Status>>(dummyStatusTag);
+const tags = ref<Array<StatusOptions>>(dummyStatusTag);
 const inputId = useId();
-const model = defineModel<TaskStatus>({default:"default"});
+const model = defineModel<TaskStatusOptions>({default:"default"});
 const showMenu = ref(false);
 const selected = computed(() => {
   if (!model.value) {

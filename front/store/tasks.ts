@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { tags as dummyTags } from "@/data/tasks";
-import type { Task, Tag, TaskStatus, TaskActivity } from "~/types/task";
+import type { Task, Tag, TaskActivity, TaskStatusOptions } from "~/types/task";
 import { useToastsStore } from "./toasts";
 import useMoment from "~/composables/useMoment";
 
@@ -31,7 +31,7 @@ export const useTasksStore = defineStore(
 
     const tags = ref<Array<Tag>>(dummyTags);
 
-    const all = async (date: string, status: TaskStatus) => {
+    const all = async (date: string, status: TaskStatusOptions) => {
       try {
         const { data }: { data: Task[] } = await $api.get(`tasks`, {
           params: {

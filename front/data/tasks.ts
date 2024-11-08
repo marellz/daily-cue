@@ -1,4 +1,4 @@
-import { type Task, type Tag, type Status } from "@/types/task";
+import { type Task, type Tag, type Status, type StatusOptions } from "@/types/task";
 
 export const tasks: Array<Task> = [];
 
@@ -37,6 +37,16 @@ export const status: Array<Status> = [
     label: "Completed",
     color: "bg-green-500"
   },
+];
+
+export const statusOptions: Array<StatusOptions> = [
+  {
+    name: "default",
+    label: "Default",
+    color: "bg-slate-200"
+  },
+
+  ...status
 ];
 
 export enum StatusEnum {

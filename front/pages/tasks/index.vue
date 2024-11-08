@@ -67,7 +67,7 @@
 // TODO: view by day, view by tag, view by status
 import { useTasksStore } from "~/store/tasks";
 import { Plus, BrainCircuit } from "lucide-vue-next";
-import type { TaskStatus } from "~/types/task";
+import type { Task, TaskStatusOptions } from "~/types/task";
 import { useAuthStore } from "~/store/auth";
 import useMoment from "~/composables/useMoment";
 
@@ -79,7 +79,7 @@ const moment = useMoment()
 const store = useTasksStore();
 const auth = useAuthStore();
 const filters = ref<{
-  status: TaskStatus;
+  status: TaskStatusOptions;
   date: null | string;
 }>({
   status: "default",

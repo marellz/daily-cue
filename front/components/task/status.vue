@@ -13,10 +13,11 @@
         {{ status.label }}
       </span>
 
-      <transition name="status">
-        <ArrowRight v-if="showNextArrow || showNext" :size="16" class="text-slate-500"/>
-      </transition>
-
+      <template v-if="status.name !== 'completed'">
+        <transition name="status">
+          <ArrowRight v-if="showNextArrow || showNext" :size="16" class="text-slate-500"/>
+        </transition>
+      </template>
     </button>
     <template v-if="nextStatus">
       <transition name="status">
@@ -37,7 +38,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type Status, type Task, type TaskStatus } from "@/types/task";
+import { type Status, type Task, type TaskStatus, type TaskStatusOptions } from "@/types/task";
 import { status as statusTags, StatusEnum } from "@/data/tasks";
 import { onClickOutside } from "@vueuse/core";
 import { useTasksStore } from "~/store/tasks";
@@ -69,7 +70,7 @@ const showNextArrow = ref(false);
 onClickOutside(target, () => {
   showNext.value = false;
 });
-const variant = (_status: TaskStatus) => StatusEnum[_status];
+const variant = (_status: TaskStatusOptions) => StatusEnum[_status];
 const updateStatus = async (_status: TaskStatus) => {
   if (props.task._id) {
     await store.update(props.task._id, {...props.task, status: _status });

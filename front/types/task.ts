@@ -1,4 +1,8 @@
-export type TaskStatus = "default" | "in_progress" | "completed" | "pending";
+import { TaskStatus } from "#build/components";
+
+export type TaskStatus =  "in_progress" | "completed" | "pending";
+
+export type TaskStatusOptions = TaskStatus | "default";
 
 export interface Task {
   _id?: string | number;
@@ -15,11 +19,18 @@ export interface Tag {
   name: string;
 }
 
-export interface Status {
-  id?: string | number;
-  name: TaskStatus;
-  label: string;
+export interface StatusAttributes{
+ label: string;
   color: string;
+}
+
+export interface Status extends StatusAttributes {
+  name: TaskStatus;
+ 
+}
+
+export interface StatusOptions extends StatusAttributes{
+  name: TaskStatusOptions,
 }
 
 export interface TaskActivity {
