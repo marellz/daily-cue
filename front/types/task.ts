@@ -40,3 +40,8 @@ export interface TaskActivity {
   in_progress: number;
   completed: number;
 }
+
+export interface TaskFilter {
+  status: TaskStatusOptions;
+  date: string | null;
+}

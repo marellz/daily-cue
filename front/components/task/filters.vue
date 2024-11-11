@@ -89,15 +89,10 @@
 </template>
 <script lang="ts" setup>
 import { useTasksStore } from "~/store/tasks";
-import { type TaskActivity, type TaskStatus } from "~/types/task";
+import { type TaskActivity, type TaskFilter } from "~/types/task";
 import useMoment, { weekdaysShort } from "@/composables/useMoment";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-vue-next";
 import { type Moment } from "moment";
-
-interface TaskFilter {
-  status: TaskStatus;
-  date: string;
-}
 
 interface Day {
   date: number;
