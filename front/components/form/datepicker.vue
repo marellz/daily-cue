@@ -109,7 +109,7 @@ const buildCalendar = (month: string = currentMonth.value) => {
 // dialog
 const active = ref(false);
 
-const selectedDate = ref<Moment>(today);
+const selectedDate = ref<Moment>(model.value);
 const selectDate = (date: Moment) => {
   selectedDate.value = date;
   model.value = date.format("YYYY-MM-DD");
