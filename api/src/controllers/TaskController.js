@@ -98,12 +98,17 @@ export const update = async (req, res) => {
       payload.completed = true;
     }
 
+    delete payload._id
+
     await Task.findByIdAndUpdate(id, payload);
 
-    const data = await Task.findById(id);
+    let updated = true
+
+    const data = await Task.findById(id)
 
     return res.status(200).json({
       data,
+      updated,
     });
   } catch (error) {
     return res.status(500).json({
