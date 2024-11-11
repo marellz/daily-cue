@@ -17,8 +17,5 @@
 <script lang="ts" setup>
 import { useTasksStore } from "~/store/tasks";
 const store = useTasksStore();
-const overdue = computed(() => store.overdue);
-const current = computed(() => store.current);
-const urgent = computed(() => store.urgent);
 const growth = ref()
 </script>

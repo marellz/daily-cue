@@ -1,10 +1,14 @@
 <template>
   <div ref="datepicker">
-    <button type="button" class="btn" @click="active = !active">
+    <button
+      type="button"
+      class="form-input !inline-flex items-center space-x-3"
+      @click="active = !active"
+    >
+      <Calendar :size="16" />
       <span>{{
         selectedDate.isSame(today, "day") ? "Today" : formatDate(selectedDate)
       }}</span>
-      <Calendar :size="16" />
     </button>
     <div v-show="active" class="card bg-white mt-2 absolute z-10">
       <div class="border rounded-lg p-4 flex">
@@ -66,15 +70,15 @@ withDefaults(
   {
     disableOlder: false,
   }
-  );
+);
 
-const moment = useMoment()
+const moment = useMoment();
 const datepicker = ref();
 const weekDays = computed(() => "SMTWTFS".split(""));
-const model = defineModel({});
+const model = defineModel();
 // get today
 const today = moment();
-
+const todayDateString = computed(() => today.format("YYYY-MM-DD"));
 const months = moment.months();
 const currentMonth = computed(() => months[moment().month()]);
 const currentYear = ref(moment().year());
@@ -108,9 +112,9 @@ const active = ref(false);
 const selectedDate = ref<Moment>(today);
 const selectDate = (date: Moment) => {
   selectedDate.value = date;
-  model.value = date
+  model.value = date.format("YYYY-MM-DD");
 
-  active.value = false
+  active.value = false;
 };
 
 const formatDate = (date: Moment) => moment(date).format("Do MMM YYYY");
@@ -118,7 +122,7 @@ const formatDate = (date: Moment) => moment(date).format("Do MMM YYYY");
 onMounted(() => {
   buildCalendar();
 
-  model.value = today;
+  model.value = todayDateString;
 });
 
 watch(
