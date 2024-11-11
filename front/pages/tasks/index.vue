@@ -1,11 +1,14 @@
 <template>
   <layout-container>
     <div class="mx-auto max-w-2xl">
-      <div>
+      <!-- header -->
+      <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg">
         <div class="flex items-center justify-between space-x-4">
           <div class="flex-auto animate-home">
             <client-only>
-              <h1 class="text-2xl font-bold text-sea-green">Good {{ dayTime }}, {{ user }}!</h1>
+              <h1 class="text-2xl font-bold text-sea-green">
+                Good {{ dayTime }}, {{ user }}!
+              </h1>
               <p>What do you feel like adding today?</p>
             </client-only>
           </div>
@@ -29,45 +32,48 @@
           </div>
         </div>
         <div class="mt-4">
-          <task-filters v-model="filters"/>
+          <task-filters v-model="filters" />
         </div>
-
-        <template v-if="tasks.length">
-          <transition-group
-            name="tasks"
-            tag="ul"
-            class="space-y-3 flex flex-col mt-10"
-          >
-            <li v-for="task in tasks" :key="task._id">
-              <task-item :task />
-            </li>
-          </transition-group>
-        </template>
-        <template v-else>
-          <div class="p-10 flex gap-10 items-center card border-0 mt-10 bg-tea-green/50">
-            <img class="h-48" src="@/assets/images/empty.svg" alt="" />
-            <div class="mb-10 space-y-2">
-              <h1 class="font-semibold text-3xl">No tasks.</h1>
-              <p class="text-lg text-slate-500">
-                No created tasks for this day.
-              </p>
-            </div>
-          </div>
-        </template>
       </div>
+
+      <transition-group
+        name="tasks"
+        tag="ul"
+        class="space-y-3 flex flex-col mt-10 relative"
+      >
+        <li v-for="task in tasks" :key="task._id">
+          <task-item class="max-w-full" :task @show-task="showTaskModal" />
+        </li>
+        <div
+          v-if="!tasks.length"
+          class="p-10 flex gap-10 items-center card border-0 mt-10 bg-tea-green/50"
+        >
+          <img class="h-48" src="@/assets/images/empty.svg" alt="" />
+          <div class="mb-10 space-y-2">
+            <h1 class="font-semibold text-3xl">No tasks.</h1>
+            <p class="text-lg text-slate-500">No created tasks for this day.</p>
+          </div>
+        </div>
+      </transition-group>
     </div>
   </layout-container>
   <dataform-new-task ref="newTaskForm" />
   <custom-modal title="Your insight" v-model:show="insightActive">
     <task-insight />
   </custom-modal>
+  <task-view
+    v-model:active="taskModalActive"
+    v-if="currentTask"
+    :id="currentTask"
+    @close="taskModalActive = false"
+  />
 </template>
 
 <script lang="ts" setup>
 // TODO: view by day, view by tag, view by status
 import { useTasksStore } from "~/store/tasks";
 import { Plus, BrainCircuit } from "lucide-vue-next";
-import type { Task, TaskStatusOptions } from "~/types/task";
+import type { Task, TaskFilter } from "~/types/task";
 import { useAuthStore } from "~/store/auth";
 import useMoment from "~/composables/useMoment";
 
@@ -75,13 +81,10 @@ definePageMeta({
   middleware: "auth",
 });
 
-const moment = useMoment()
+const moment = useMoment();
 const store = useTasksStore();
 const auth = useAuthStore();
-const filters = ref<{
-  status: TaskStatusOptions;
-  date: null | string;
-}>({
+const filters = ref<TaskFilter>({
   status: "default",
   date: null,
 });
@@ -121,33 +124,48 @@ const dayTime = computed(() => {
 
   return t;
 });
+const taskModalActive = ref(false);
+const currentTask = ref<string | number | null>();
+const showTaskModal = async (id: string) => {
+  currentTask.value = id;
+  taskModalActive.value = true;
+};
 
 onMounted(async () => {
-  let dateString = moment().format("YYYY-MM-DD");
-  await store.all(dateString, "default");
+  await store.all(store.currentDay, "default");
 });
+
 </script>
 <style lang="scss" scoped>
 .tasks {
   &-enter-to,
   &-leave-from {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
 
   &-enter-from,
   &-leave-to {
-    transform: translateX(10px);
+    transform: translateY(10px);
     opacity: 0;
+  }
+
+  &-leave-to{
+    // position: absolute;
+  }
+
+  &-enter-to{
+    transition-duration: .7s;
+  }
+
+  &-enter-active{
+    position: absolute;
+    opacity: 0
   }
 
   &-leave-active,
   &-enter-active {
-    transition: all 0.15s ease;
-  }
-
-  &-leave-active {
-    position: absolute;
+    transition: all 0.5s ease;
   }
 }
 </style>

@@ -1,4 +1,5 @@
 import { TaskStatus } from "#build/components";
+import type { Moment } from "moment";
 
 export type TaskStatus =  "in_progress" | "completed" | "pending";
 
@@ -44,4 +45,11 @@ export interface TaskActivity {
 export interface TaskFilter {
   status: TaskStatusOptions;
   date: string | null;
+}
+
+export interface TaskForm {
+  title: string;
+  description: string;
+  due_date: Moment | null;
+  status?: TaskStatus
 }

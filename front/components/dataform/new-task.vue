@@ -1,62 +1,56 @@
 <template>
   <custom-modal v-model:show="modalActive" title="Add a new task">
-    <form @submit.prevent="submit">
-      <div class="space-y-4">
-        <form-input label="Task title" v-model="form.title" />
-        <form-text label="Task description" v-model="form.description" />
-        <form-group label="Due date">
-          <form-datepicker
-            v-model="selectedDate"
-            disable-older
-          ></form-datepicker>
-        </form-group>
-
-        <div class="flex justify-end">
-          <button class="btn btn-primary">
-            <circle-plus />
-            <span> Add task </span>
-          </button>
-        </div>
+    <task-form @submit.prevent="submit" v-model="form">
+      <task-form @submit="submit" />
+      <div class="flex justify-end">
+        <button class="btn btn-primary">
+          <circle-plus />
+          <span> Add task </span>
+        </button>
       </div>
-    </form>
+    </task-form>
+    <div class="flex items-center space-x-2 justify-end mt-4">
+      <base-button @click="modalActive = false">
+        <span>Cancel</span></base-button
+      >
+      <base-button class="btn-primary" @click="submit">
+        <Check />
+        <span>Create task</span>
+      </base-button>
+    </div>
   </custom-modal>
 </template>
 <script lang="ts" setup>
-import type { Task } from "~/types/task";
-import { CirclePlus } from "lucide-vue-next";
+import type { TaskForm } from "~/types/task";
 import { useTasksStore } from "~/store/tasks";
-import { type Moment } from "moment";
 import useMoment from "~/composables/useMoment";
+import { newTask } from "~/data/tasks";
+import { Check, CirclePlus } from "lucide-vue-next";
 
-const moment = useMoment()
+const moment = useMoment();
 const store = useTasksStore();
 const modalActive = ref(false);
-const selectedDate = ref<Moment | null>(null);
-const newTask: Task = {
-  title: "",
-  description: "",
-  due_date: "",
-  status: "default",
+
+const launch = () => {
+  modalActive.value = true;
 };
 
-const form = ref<Task>(newTask);
-const launch = () => {
-  modalActive.value = true
-};
+const form = ref<TaskForm>(newTask);
 
 const submit = async () => {
   let task = { ...form.value };
   task.status = "pending";
-  if (selectedDate.value) {
-    task.due_date = selectedDate.value.format("YYYY-MM-DD");
+  let due_date;
+  if (form.value.due_date) {
+    due_date = form.value.due_date.format("YYYY-MM-DD");
   } else {
-    task.due_date = moment().format("YYYY-MM-DD");
+    due_date = moment().format("YYYY-MM-DD");
   }
 
-  const added = await store.create(task);
+  const added = await store.create({ ...form.value, due_date });
 
-  if(added){
-    modalActive.value = false
+  if (added) {
+    modalActive.value = false;
   }
 };
 

@@ -21,17 +21,17 @@ export const useTasksStore = defineStore(
 
     const tasks = ref<Array<Task>>([]);
 
-    const overdue = ref(0);
-    const urgent = ref(0);
-    const current = ref(0);
-
     const dateRange = ref<ActivityDateRange | null>();
+
+    const currentDay = ref(moment().format("YYYY-MM-DD"));
 
     const weeklyActivity = ref<Array<TaskActivity>>();
 
     const tags = ref<Array<Tag>>(dummyTags);
 
     const all = async (date: string, status: TaskStatusOptions) => {
+      currentDay.value = date;
+
       try {
         const { data }: { data: Task[] } = await $api.get(`tasks`, {
           params: {
@@ -51,6 +51,32 @@ export const useTasksStore = defineStore(
       }
     };
 
+    const get = async (id: string | number) => {
+      console.log('attempt to get ', id)
+      try {
+        const { data, error }: { data?: Task; error?: string } = await $api.get(
+          `/tasks/${id}`
+        );
+        if (error) {
+          toasts.add({
+            variant: "error",
+            title: error,
+          });
+        }
+
+        if (data) {
+          return data;
+        }
+
+        return null;
+      } catch (error) {
+        toasts.add({
+          variant: "error",
+          title: "Error getting this task",
+        });
+      }
+    };
+
     const create = async (task: Task) => {
       const { data: item }: { data: Task } = await $api.post("/tasks", task);
       if (item && item._id) {
@@ -65,24 +91,49 @@ export const useTasksStore = defineStore(
     };
 
     const update = async (id: string | number, task: Task) => {
-      const { data }: { data: Task; updated: boolean } = await $api.put(
-        `/tasks/${id}`,
-        task
-      );
+      const {
+        data,
+        updated,
+        message,
+        error,
+      }: { data?: Task; updated: boolean; error?: string; message?: string } =
+        await $api.put(`/tasks/${id}`, task);
 
-      if (data._id) {
-        // update task
-        let indexOf = tasks.value.findIndex((t: Task) => t._id === data._id);
-        tasks.value[indexOf] = data;
-
+      if (!updated) {
         toasts.add({
-          variant: "success",
-          title: "Task has been updated",
+          variant: "error",
+          title: error ?? "Error updating task",
+          description: message,
         });
-
-        // refresh week activity
-        getWeeklyActivity();
+        console.error({ error, message });
+        return false;
       }
+
+      // update task
+      if (data) {
+        const taskDay = moment(data.due_date);
+
+        const isSameDay = moment(currentDay.value).isSame(taskDay, "day");
+        let indexOf = tasks.value.findIndex((t: Task) => t._id === data._id);
+
+        if (!isSameDay) {
+          tasks.value.splice(indexOf, 1);
+
+          // todo: move this splice action to form/modal unmount hook.
+        } else {
+          tasks.value[indexOf] = data;
+        }
+      }
+
+      toasts.add({
+        variant: "success",
+        title: "Task has been updated",
+      });
+
+      // refresh week activity
+      getWeeklyActivity();
+
+      return true;
     };
 
     const destroy = async (id: string | number) => {
@@ -143,14 +194,13 @@ export const useTasksStore = defineStore(
     return {
       tasks,
       tags,
-      current,
-      urgent,
-      overdue,
       all,
+      get,
       create,
       update,
       destroy,
 
+      currentDay,
       dateRange,
       weeklyActivity,
       setDateRange,

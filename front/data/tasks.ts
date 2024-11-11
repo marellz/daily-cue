@@ -1,4 +1,4 @@
-import { type Task, type Tag, type Status, type StatusOptions } from "@/types/task";
+import type { Task, Tag, Status, StatusOptions, TaskForm } from "@/types/task";
 
 export const tasks: Array<Task> = [];
 
@@ -14,28 +14,19 @@ export const tags: Array<Tag> = [
 
 export const status: Array<Status> = [
   {
-    id: 1,
-    name: "default",
-    label: "Default",
-    color: "bg-slate-200"
-  },
-  {
-    id: 2,
     name: "pending",
     label: "Pending",
-    color: "bg-amber-500"
+    color: "bg-amber-500",
   },
   {
-    id: 3,
     name: "in_progress",
     label: "In progress",
-    color: "bg-blue-500"
+    color: "bg-blue-500",
   },
   {
-    id: 4,
     name: "completed",
     label: "Completed",
-    color: "bg-green-500"
+    color: "bg-green-500",
   },
 ];
 
@@ -43,10 +34,10 @@ export const statusOptions: Array<StatusOptions> = [
   {
     name: "default",
     label: "Default",
-    color: "bg-slate-200"
+    color: "bg-slate-200",
   },
 
-  ...status
+  ...status,
 ];
 
 export enum StatusEnum {
@@ -56,3 +47,10 @@ export enum StatusEnum {
   pending = "bg-amber-100 text-amber-500",
   overdue = "bg-red-100 text-red-500",
 }
+
+export const newTask: TaskForm = {
+  title: "",
+  description: "",
+  due_date: null,
+  status: "pending",
+};

@@ -75,6 +75,7 @@ const updateStatus = async (_status: TaskStatus) => {
   if (props.task._id) {
     await store.update(props.task._id, {...props.task, status: _status });
     showNext.value = false
+    emit('update-status')
   }
 };
 </script>
