@@ -57,10 +57,7 @@
       </transition-group>
     </div>
   </layout-container>
-  <dataform-new-task ref="newTaskForm" />
-  <custom-modal title="Your insight" v-model:show="insightActive">
-    <task-insight />
-  </custom-modal>
+  <task-create ref="newTaskForm" />
   <task-view
     v-model:active="taskModalActive"
     v-if="currentTask"
