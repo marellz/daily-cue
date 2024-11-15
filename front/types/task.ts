@@ -47,9 +47,11 @@ export interface TaskFilter {
   date: string | null;
 }
 
+export type TaskDate = Date | Object;
+
 export interface TaskForm {
   title: string;
   description: string;
-  due_date: Moment | null;
+  due_date: TaskDate;
   status?: TaskStatus
 }

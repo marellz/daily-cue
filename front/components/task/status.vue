@@ -38,7 +38,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type Status, type Task, type TaskStatus, type TaskStatusOptions } from "@/types/task";
+import type { Status, Task, TaskStatus, TaskStatusOptions } from "@/types/task";
 import { status as statusTags, StatusEnum } from "@/data/tasks";
 import { onClickOutside } from "@vueuse/core";
 import { useTasksStore } from "~/store/tasks";

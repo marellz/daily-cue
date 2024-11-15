@@ -51,6 +51,6 @@ export enum StatusEnum {
 export const newTask: TaskForm = {
   title: "",
   description: "",
-  due_date: null,
+  due_date: new Date(),
   status: "pending",
 };

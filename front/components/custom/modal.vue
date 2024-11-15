@@ -3,18 +3,18 @@
     class="fixed inset-0 z-50 bg-tea-green/25 backdrop-blur-sm flex justify-center items-start pt-20 invisible"
     :class="{ '!visible': show }"
   >
-    <div
-      class="!p-0 relative z-10 w-full"
-      :class="[width]"
-      ref="modal"
-    >
+    <div class="!p-0 relative z-10 w-full" :class="[width]" ref="modal">
       <div class="p-3 rounded-t-xl pt-4 flex items-center bg-slate-100">
         <slot name="header">
           <div class="flex-auto">
             <h1 class="text-2xl font-bold">{{ title }}</h1>
           </div>
         </slot>
-        <button type="button" class="p-1 bg-slate-200 rounded-full hover:bg-black hover:text-white" @click="close">
+        <button
+          type="button"
+          class="p-1 bg-slate-200 rounded-full hover:bg-black hover:text-white"
+          @click="close"
+        >
           <x :size="20" />
         </button>
       </div>
@@ -37,10 +37,15 @@ withDefaults(
   }
 );
 
-const show = defineModel('show', { default: false})
+const show = defineModel("show", { default: false });
 const close = () => {
-  show.value = false
+  show.value = false;
 };
 const modal = ref();
 onClickOutside(modal, close);
+
+watch(show, (v) => {
+  let w = document.body.classList;
+  v ? w.add("overflow-hidden") : w.remove("overflow-hidden");
+});
 </script>
