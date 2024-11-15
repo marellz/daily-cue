@@ -3,7 +3,10 @@
     <div class="space-y-4">
       <template v-if="form">
         <template v-if="!editMode">
-          <task-status @update-status="refresh" :task="form" />
+
+          <!-- todo: this should accept form -->
+          <task-status v-if="task" @update-status="refresh" :task />
+
           <div class="border rounded-lg p-2 mt-4 space-y-3">
             <div class="flex items-center justify-between">
               <p class="text-sm text-slate-500">Task details</p>
@@ -28,7 +31,7 @@
             <p>{{ form.description }}</p>
           </div>
         </template>
-        <div v-else>
+        <div v-else="form">
           <task-form :submitted v-model="form" />
         </div>
       </template>
@@ -58,7 +61,7 @@
 import { Calendar, EditIcon, Check } from "lucide-vue-next";
 import useMoment from "~/composables/useMoment";
 import { useTasksStore } from "~/store/tasks";
-import { type Task, type TaskForm } from "~/types/task";
+import { type TaskForm, type Task } from "~/types/task";
 
 const moment = useMoment();
 const store = useTasksStore();
@@ -66,13 +69,15 @@ const props = defineProps<{
   id: string | number;
 }>();
 
-const emit = defineEmits(["close"]);
-
 const active = defineModel("active", { default: false });
 const editMode = ref(false);
-const form = ref<Task | null>();
 const submitted = ref(false);
 
+// task being edited, readonly
+const task = ref<Task|null>()
+
+// task, but editable
+const form = ref<TaskForm | undefined>();
 const taskDueDate = computed(() => {
   if (!form.value) {
     return { date: "", time: "" };
@@ -84,7 +89,7 @@ const taskDueDate = computed(() => {
     dateFormat += " YYYY";
   }
   let date = _d.format(dateFormat);
-  let time = _d.format("HH:MM");
+  let time = _d.format("hh:mm A");
 
   return { date, time };
 });
@@ -105,15 +110,17 @@ const refresh = async () => {
   const _t = await store.get(props.id);
 
   if (_t) {
-    form.value = _t;
+    task.value = _t
+    const { title, description, due_date, status } = _t;
+    form.value = { title, description: description ?? '', due_date, status };
   }
 };
 
 watch(active, () => {
-  editMode.value = false
-})
+  editMode.value = false;
+});
 
-watch(()=>props.id, refresh)
+watch(() => props.id, refresh);
 
-onMounted(refresh)
+onMounted(refresh);
 </script>

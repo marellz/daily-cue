@@ -12,8 +12,11 @@
           {{ option.label }}
         </option>
       </form-select>
-      <form-group label="Due date">
-        <form-datepicker v-model="form.due_date" disable-older></form-datepicker>
+      <form-group v-if="form.status!=='completed'" label="Due date">
+        <div class="space-y-2">
+          <form-datepicker v-model="form.due_date" disable-older />
+          <form-timepicker v-model="form.due_date" />
+        </div>
       </form-group>
     </div>
   </div>
@@ -31,11 +34,11 @@ const props = defineProps<{
 
 const selectedDate = ref<Moment | null>(null);
 
-const form = defineModel({ default: newTask });
+const form = defineModel<TaskForm>({ default: newTask });
 
 watch(selectedDate, (v: Moment | null) => {
   if (v) {
-    form.value.due_date = v;
+    form.value.due_date = v.toDate();
   }
 });
 
