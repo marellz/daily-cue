@@ -62,6 +62,7 @@ import { ArrowLeft, ArrowRight, Calendar } from "lucide-vue-next";
 import { type Moment } from "moment";
 import useMoment from "~/composables/useMoment";
 import { onClickOutside } from "@vueuse/core";
+import type { TaskDate } from "~/types/task";
 
 withDefaults(
   defineProps<{
@@ -73,14 +74,17 @@ withDefaults(
 );
 
 const moment = useMoment();
+
 const datepicker = ref();
 const weekDays = computed(() => "SMTWTFS".split(""));
-const model = defineModel();
-// get today
+const model = defineModel<TaskDate>({ default: new Date() });
+
+// starting point
 const today = moment();
+
 const todayDateString = computed(() => today.format("YYYY-MM-DD"));
 const months = moment.months();
-const currentMonth = computed(() => months[moment().month()]);
+const currentMonth = computed(() => moment.months()[moment().month()]);
 const currentYear = ref(moment().year());
 const monthOnDisplay = ref(moment().month());
 const monthOnDisplayFull = computed(() => months[monthOnDisplay.value]);
@@ -109,20 +113,22 @@ const buildCalendar = (month: string = currentMonth.value) => {
 // dialog
 const active = ref(false);
 
-const selectedDate = ref<Moment>(model.value);
+const selectedDate = ref<Moment>(moment(model.value) ?? moment());
+
 const selectDate = (date: Moment) => {
   selectedDate.value = date;
-  model.value = date.format("YYYY-MM-DD");
-
+  model.value = date.toDate();
   active.value = false;
 };
 
 const formatDate = (date: Moment) => moment(date).format("Do MMM YYYY");
 
-onMounted(() => {
-  buildCalendar();
+onMounted(buildCalendar);
 
-  model.value = todayDateString;
+onMounted(() => {
+  if (!model.value) {
+    model.value = moment().toDate();
+  }
 });
 
 watch(

@@ -1,84 +1,97 @@
 <template>
-    <div class="relative">
-        <client-only>
-            <button type="button" class="btn" @click="active = !active">
-                <span>{{ selectedTime }}</span>
-                <Clock :size="16" />
-            </button>
-        </client-only>
-        <div v-show="active" class="card bg-white mt-2 absolute z-10">
-            <div class="flex font-monospace h-20">
-                <perfect-scrollbar>
-                    <ul>
-                        <li v-for="hour in times.hours">
-                            <button type="button" class="time-btn" @click="setHour(hour)">
-                                {{ hour }}
-                            </button>
-                        </li>
-                    </ul>
-                </perfect-scrollbar>
-                <perfect-scrollbar>
-                    <ul>
-                        <li v-for="minutes in times.minutes">
-                            <button type="button" class="time-btn" @click="setMinutes(minutes)">
-                                {{ minutes }}
-                            </button>
-                        </li>
-                    </ul>
-                </perfect-scrollbar>
-                <perfect-scrollbar>
-                    <ul>
-                        <li v-for="mer in times.meridiem">
-                            <button type="button" class="time-btn" @click="setMeridiem(mer)">{{ mer }}</button>
-                        </li>
-                    </ul>
-                </perfect-scrollbar>
-            </div>
+  <div class="relative" ref="target">
+    <button
+      class="!flex items-center space-x-2 form-input"
+      @click="active = !active"
+    >
+      <Clock :size="16" />
+      <span>
+        {{ selectedTime }}
+      </span>
+      <div class="!ml-auto">
+        <ChevronDown class="transform transition ease-in-out" :class="{'rotate-180':active}" />
+      </div>
+    </button>
+    <div
+      class="card bg-white absolute w-full z-[2] top-full mt-2"
+      v-show="active"
+    >
+      <perfect-scrollbar class="h-32">
+        <div
+          class="flex p-1 rounded-lg"
+          v-for="({ value, label,id }, key) in times"
+          :key="id"
+          :class="{ 'bg-slate-200': value === time }"
+        >
+          <input
+            type="radio"
+            name="time-select"
+            :id="`time-${id}`"
+            class="h-0 w-0"
+            :value
+            v-model="time"
+          />
+          <label :for="`time-${id}`" class="block">
+            <p>{{ label }}</p>
+          </label>
         </div>
+      </perfect-scrollbar>
     </div>
+  </div>
 </template>
 <script lang="ts" setup>
-import useMoment from '~/composables/useMoment';
-const moment = useMoment()
-const model = defineModel()
-const active = ref(true)
-const selectedTime = computed(() => model.value.format('HH:mm A'))
+import { onClickOutside } from "@vueuse/core";
+import { ChevronDown, Clock } from "lucide-vue-next";
+import type { TaskDate } from "~/types/task";
+
+const model = defineModel<TaskDate>();
+const moment = useMoment();
+const target = ref()
+const time = ref("8:00");
+const active = ref(false);
 const times = computed(() => {
-    let hours = Array(12).fill(0).map((h, i) => {
-        let hour = i === 0 ? 12 : i
-        return hour < 10 ? `0${hour}` : hour
-    })
-    let minutes = ['00', '15', '30', '45']
-    let meridiem = ['AM', 'PM']
-    return {
-        hours,
-        minutes,
-        meridiem,
-    }
+  let _m = moment();
+  let _s = _m.hours(6).minutes(0);
+  let _e = _s.clone().hours(20).minutes(0);
+  let _list = [];
+  do {
+    _list.push({
+      id: useId(),
+      label: _s.format("hh:mm A"),
+      value: _s.format("HH:mm"),
+    });
+    _s.add("30", "minutes");
+  } while (!_s.isAfter(_e, "minute"));
+  
+  return _list;
+});
+
+const selectedTime = computed(() => {
+  const _t = times.value.find(t=>t.value===time.value)
+  return _t?.label ?? '--:--'
 })
 
-const setHour = (v: number) => {
-    model.value.hours(v)
-}
-const setMinutes = (v: string) => {
+watch(time, (v) => {
+  let [hours, minutes] = v.split(":");
+  model.value = moment(model.value).set({
+    hours: Number(hours),
+    minutes: Number(minutes),
+  });
 
-}
-const setMeridiem = (v: string) => {
-
-}
+  active.value = false
+});
 
 onMounted(() => {
-    if (!model.value) {
-        model.value = moment()
-    }
+  // set time from model
+  if (model.value) {
+    time.value = moment(model.value)
+      .add(1, "hour")
+      .startOf("hour")
+      .format("HH:mm");
+  }
+});
+
+onClickOutside(target, () => {
+  active.value = false
 })
 </script>
-<style lang="scss">
-.time-btn {
-    @apply p-1
-}
-
-ul {
-    @apply border-l first:border-l-0 px-2
-}
-</style>
