@@ -57,15 +57,12 @@
       </transition-group>
     </div>
   </layout-container>
-  <dataform-new-task ref="newTaskForm" />
-  <custom-modal title="Your insight" v-model:show="insightActive">
-    <task-insight />
-  </custom-modal>
+  <task-create ref="newTaskForm" />
+  <task-insight v-model:active="insightActive" />
   <task-view
     v-model:active="taskModalActive"
     v-if="currentTask"
     :id="currentTask"
-    @close="taskModalActive = false"
   />
 </template>
 
@@ -134,7 +131,6 @@ const showTaskModal = async (id: string) => {
 onMounted(async () => {
   await store.all(store.currentDay, "default");
 });
-
 </script>
 <style lang="scss" scoped>
 .tasks {
@@ -150,13 +146,13 @@ onMounted(async () => {
     opacity: 0;
   }
 
-  &-enter-to{
-    transition-duration: .7s;
+  &-enter-to {
+    transition-duration: 0.7s;
   }
 
-  &-enter-active{
+  &-enter-active {
     position: absolute;
-    opacity: 0
+    opacity: 0;
   }
 
   &-leave-active,

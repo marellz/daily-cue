@@ -42,7 +42,7 @@ const submit = async () => {
   task.status = "pending";
   let due_date;
   if (form.value.due_date) {
-    due_date = form.value.due_date.format("YYYY-MM-DD");
+    due_date = moment(form.value.due_date).format("YYYY-MM-DD");
   } else {
     due_date = moment().format("YYYY-MM-DD");
   }

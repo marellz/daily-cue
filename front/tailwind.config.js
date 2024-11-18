@@ -15,6 +15,7 @@ export default {
   theme: {
     fontFamily: {
       sans: "Inter, sans-serif",
+      monospace: "Kode Mono, monospace"
     },
     extend: {
       colors: {

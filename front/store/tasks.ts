@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { tags as dummyTags } from "@/data/tasks";
-import type { Task, Tag, TaskActivity, TaskStatusOptions } from "~/types/task";
+import type { Task, TaskForm, Tag, TaskActivity, TaskStatusOptions } from "~/types/task";
 import { useToastsStore } from "./toasts";
 import useMoment from "~/composables/useMoment";
 
@@ -89,7 +89,7 @@ export const useTasksStore = defineStore(
       return true;
     };
 
-    const update = async (id: string | number, task: Task) => {
+    const update = async (id: string | number, task: Task |  TaskForm) => {
       const {
         data,
         updated,
