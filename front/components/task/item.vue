@@ -9,7 +9,7 @@
         <div class="flex">
           <button
             type="button"
-            class="border border-black hover:bg-black hover:text-white rounded-full p-2"
+            class="opacity-50 hover:opacity-100 bg-white hover:shadow transition easy-in hover:text-slate-500 rounded-full p-2"
             @click="show"
           >
             <Ellipsis />
