@@ -48,7 +48,6 @@ const auth = useAuthStore();
 const userDropdownActive = ref(false);
 const route = useRoute()
 const toggleUserDropdown = () => {
-  //todo: implement dropdown effect properly
   userDropdownActive.value = !userDropdownActive.value;
 };
 

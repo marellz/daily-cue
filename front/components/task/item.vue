@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border rounded-xl p-4 flex"
+    class="border rounded-xl p-4 flex transition duration-100"
     :class="statusBackground[task.status as TaskStatus]"
   >
     <div class="flex-auto">
@@ -28,7 +28,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-// TODO: review design
 import type { Task, TaskStatus } from "@/types/task";
 import { Ellipsis } from "lucide-vue-next";
 import { useTasksStore } from "~/store/tasks";
@@ -38,17 +37,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["show-task"]);
-// const isComplete = computed(() => props.task.status === "completed");
-
-// const markAsComplete = async () => {
-//   if (props.task._id) {
-//     await store.update(props.task._id, {
-//       ...props.task,
-//       completed: true,
-//       status: "completed",
-//     });
-//   }
-// };
 
 const show = () => {
   emit("show-task", props.task._id);

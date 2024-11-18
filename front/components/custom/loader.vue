@@ -27,8 +27,6 @@ withDefaults(
 );
 </script>
 <style lang="scss" scoped>
-
-// TODO: fix animation when not stuttering?
 .loader {
   animation: loader 0.75s linear infinite;
 }

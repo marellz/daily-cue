@@ -52,7 +52,6 @@ export const useTasksStore = defineStore(
     };
 
     const get = async (id: string | number) => {
-      console.log('attempt to get ', id)
       try {
         const { data, error }: { data?: Task; error?: string } = await $api.get(
           `/tasks/${id}`
@@ -84,7 +83,7 @@ export const useTasksStore = defineStore(
       }
       toasts.add({
         variant: "success",
-        title: "Task has been created!", // todo: add more info to toast
+        title: "Task has been created!",
       });
 
       return true;
@@ -119,7 +118,7 @@ export const useTasksStore = defineStore(
         if (!isSameDay) {
           tasks.value.splice(indexOf, 1);
 
-          // todo: move this splice action to form/modal unmount hook.
+        // todo: move this splice action to form/modal unmount hook.
         } else {
           tasks.value[indexOf] = data;
         }
@@ -153,7 +152,6 @@ export const useTasksStore = defineStore(
 
     const getWeeklyActivity = async () => {
       if (!dateRange.value) {
-        console.log("didn't update weekly");
         return;
       }
 

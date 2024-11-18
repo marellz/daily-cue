@@ -18,11 +18,9 @@ export default defineNuxtPlugin(() => {
 
   api.interceptors.request.use(
     function (config) {
-      // todo: get token from vue and use
       return config;
     },
     function (error) {
-      // Do something with request error
       return Promise.reject(error);
     }
   );
@@ -32,15 +30,13 @@ export default defineNuxtPlugin(() => {
       return response.data;
     },
     function (error) {
-      // todo: handle errors, somwehow
       const status = error.response.status;
       const route = useRoute();
       switch (status) {
         case 401:
           useAuthStore().logout();
 
-          // todo, use regex next time!
-          if (!["/auth/login", "/auth/register"].includes(route.path)) {
+          if (route.path.match(`/auth/*`)) {
             useRouter().push("/");
           }
       }
