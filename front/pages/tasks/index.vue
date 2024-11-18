@@ -2,7 +2,7 @@
   <layout-container>
     <div class="mx-auto max-w-2xl">
       <!-- header -->
-      <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg">
+      <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg z-2">
         <div class="flex items-center justify-between space-x-4">
           <div class="flex-auto animate-home">
             <client-only>
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-// TODO: view by day, view by tag, view by status
+// TODO: view by day✅, view by tag👨🏽‍💻, view by status✅
 import { useTasksStore } from "~/store/tasks";
 import { Plus, BrainCircuit } from "lucide-vue-next";
 import type { Task, TaskFilter } from "~/types/task";
@@ -144,10 +144,6 @@ onMounted(async () => {
   &-leave-to {
     transform: translateY(10px);
     opacity: 0;
-  }
-
-  &-leave-to {
-    // position: absolute;
   }
 
   &-enter-to {

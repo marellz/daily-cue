@@ -20,5 +20,5 @@ import { tags } from "~/data/tasks";
 defineProps<{
   count: number;
 }>()
-// TODO: tags from remaining tasks
+// todo: tags from remaining tasks
 </script>

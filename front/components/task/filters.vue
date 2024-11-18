@@ -26,8 +26,8 @@
   </div>
 
   <template v-if="weeksDisplayActive">
-    <div v-if="!days.length" class="mt-4">
-      <custom-loader />
+    <div v-if="days.length" class="mt-4 py-5 border">
+      <custom-loader class="text-celadon" />
     </div>
 
     <div
