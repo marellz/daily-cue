@@ -22,6 +22,7 @@
           <ArrowRight :size="20" />
         </button>
       </div>
+      <form-tags></form-tags>
     </div>
   </div>
 
@@ -93,6 +94,7 @@ import { type TaskActivity, type TaskFilter } from "~/types/task";
 import useMoment, { weekdaysShort } from "@/composables/useMoment";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-vue-next";
 import { type Moment } from "moment";
+import { useTagsStore } from "~/store/tags";
 
 interface Day {
   date: number;
@@ -102,6 +104,7 @@ interface Day {
   activity: TaskActivity | null;
 }
 const store = useTasksStore();
+const tags = useTagsStore()
 const moment = useMoment();
 
 const filters = defineModel<TaskFilter>({ default: {} });
