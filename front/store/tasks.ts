@@ -1,7 +1,8 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { tags as dummyTags } from "@/data/tasks";
-import type { Task, TaskForm, Tag, TaskActivity, TaskStatusOptions } from "~/types/task";
+import type { Task, TaskForm, TaskActivity, TaskStatusOptions } from "~/types/task";
+import type { Tag } from "~/types/tag";
 import { useToastsStore } from "./toasts";
 import useMoment from "~/composables/useMoment";
 
