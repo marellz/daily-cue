@@ -8,7 +8,7 @@ export const index = async (req, res) => {
   try {
     let due_date;
 
-    let { date, status } = req.query;
+    let { date, status, tags = [] } = req.query;
 
     if (date) {
       due_date = moment(date);
@@ -26,11 +26,17 @@ export const index = async (req, res) => {
       user,
     };
 
-    if (status !== "default") {
+    if (status && status !== "default") {
       query_parameters.status = status;
     }
 
-    const data = await Task.find(query_parameters);
+    if (tags.length) {
+      query_parameters.tags = {
+        $in: tags,
+      };
+    }
+
+    const data = await Task.find(query_parameters).populate("tags");
 
     return res.status(200).json({
       data,
@@ -62,7 +68,7 @@ export const get = async (req, res) => {
 
 export const store = async (req, res) => {
   try {
-    let { title, description, status, due_date, completed = false } = req.body;
+    let { title, description, status, due_date, completed = false, tags = [] } = req.body;
 
     if (due_date === null) {
       due_date = moment().add(2, "hours");
@@ -70,14 +76,17 @@ export const store = async (req, res) => {
 
     const { _id: user } = await User.findOne({ email: req.user.email });
 
-    const data = await Task.create({
+    const created = await Task.create({
       title,
       description,
       due_date: moment(due_date),
       status,
       completed,
+      tags,
       user,
     });
+
+    const data = await Task.findById(created._id).populate('tags')
 
     return res.status(200).json({ data });
   } catch (error) {
@@ -98,13 +107,13 @@ export const update = async (req, res) => {
       payload.completed = true;
     }
 
-    delete payload._id
+    delete payload._id;
 
     await Task.findByIdAndUpdate(id, payload);
 
-    let updated = true
+    let updated = true;
 
-    const data = await Task.findById(id)
+    const data = await Task.findById(id).populate('tags');
 
     return res.status(200).json({
       data,
@@ -154,6 +163,7 @@ export const weekly = async (req, res) => {
         $lte: endDate.endOf("day").toDate(),
       },
     };
+
     const tasks = await Task.find(parameters);
 
     const days = Array(7)

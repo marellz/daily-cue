@@ -10,11 +10,9 @@
           <div class="border rounded-lg p-2 mt-4 space-y-3">
             <div class="flex items-center justify-between">
               <p class="text-sm text-slate-500">Task details</p>
-              <button
-                type="button"
+              <button type="button"
                 class="inline-flex items-center space-x-2 p-2 rounded-full bg-slate-200 hover:bg-black hover:text-white"
-                @click="editMode = true"
-              >
+                @click="editMode = true">
                 <span class="">
                   <EditIcon :size="20" :stroke-width="1.5" />
                 </span>
@@ -22,9 +20,7 @@
               </button>
             </div>
             <h1 class="text-2xl">{{ form.title }}</h1>
-            <p
-              class="inline-flex items-center space-x-2 py-1 px-3 text-sm rounded-full bg-slate-200"
-            >
+            <p class="inline-flex items-center space-x-2 py-1 px-3 text-sm rounded-full bg-slate-200">
               <Calendar :opacity="0.4" :size="16" />
               <span>{{ taskDueDate.date }} &ndash; {{ taskDueDate.time }}</span>
             </p>
@@ -74,7 +70,7 @@ const editMode = ref(false);
 const submitted = ref(false);
 
 // task being edited, readonly
-const task = ref<Task|null>()
+const task = ref<Task | null>()
 
 // task, but editable
 const form = ref<TaskForm | undefined>();
@@ -111,8 +107,9 @@ const refresh = async () => {
 
   if (_t) {
     task.value = _t
-    const { title, description, due_date, status } = _t;
-    form.value = { title, description: description ?? '', due_date, status };
+    const { title, description = '', due_date, status, tags = [] } = _t;
+    let tag_ids = tags.map(t => t._id)
+    form.value = { title, description, due_date, status, tags: tag_ids };
   }
 };
 

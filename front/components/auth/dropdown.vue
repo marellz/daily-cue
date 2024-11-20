@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" ref="target">
+  <div class="relative z-[4]" ref="target">
     <button
       type="button"
       ref="targetToggle"

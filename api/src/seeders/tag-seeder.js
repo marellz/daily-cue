@@ -1,18 +1,28 @@
 import mongoose from "mongoose";
 import config from "../../config/db.js";
-import { tasks as taskSeeder } from "#data/tasks.js";
-import TaskModel from "#models/Task.js";
 import dotenv from "dotenv";
+import User from "#models/User.js";
+import TagModel from "#models/Tag.js";
+import { tags } from "#data/tags.js";
+import _ from "lodash";
 dotenv.config();
 
 const run = async () => {
-  const tasks = await taskSeeder();
   try {
-    // reset
-    await TaskModel.deleteMany();
-    // write fresh
-    await TaskModel.insertMany(tasks);
-    console.log("Seeding tasks completed");
+    await TagModel.deleteMany()
+    
+    const users = await User.find();
+
+
+    let data = []
+
+    users.forEach(async (user) => {
+      data = [...data, ...tags.map((t) => ({ ...t, user: user.id }))];
+    });
+    
+    await TagModel.insertMany(data)
+
+    console.log("Seeding tags completed");
     process.exit(0);
   } catch (error) {
     console.log("Error occurred when seeding tasks: ", error);

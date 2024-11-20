@@ -1,5 +1,4 @@
-import { TaskStatus } from "#build/components";
-import type { Moment } from "moment";
+import { type Tag } from "~/types/tag";
 
 export type TaskStatus =  "in_progress" | "completed" | "pending";
 
@@ -15,10 +14,6 @@ export interface Task {
   tags?: Array<Tag>;
 }
 
-export interface Tag {
-  id?: string | number;
-  name: string;
-}
 
 export interface StatusAttributes{
  label: string;
@@ -45,6 +40,7 @@ export interface TaskActivity {
 export interface TaskFilter {
   status: TaskStatusOptions;
   date: string | null;
+  tags: Array<string>
 }
 
 export type TaskDate = Date | Object;
@@ -54,4 +50,5 @@ export interface TaskForm {
   description: string;
   due_date: TaskDate;
   status?: TaskStatus
+  tags: Array<string>
 }

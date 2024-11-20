@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-tea-green/25 backdrop-blur-sm flex justify-center items-start pt-20 invisible"
+    class="fixed inset-0 z-50 bg-tea-green/25 backdrop-blur-sm flex justify-center items-start pt-20 invisible overflow-auto py-10"
     :class="{ '!visible': show }"
   >
     <div class="!p-0 relative z-10 w-full" :class="[width]" ref="modal">

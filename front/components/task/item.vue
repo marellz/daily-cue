@@ -24,14 +24,23 @@
       <p class="text-gray-600">
         {{ task.description }}
       </p>
+      <template v-if="task.tags?.length">
+        <ul class="mt-4 flex flex-wrap gap-4">
+          <li v-for="item in task.tags">
+            <p class="rounded-full px-2 py-0.5 text-xs leading-normal" :class="TagColors[item.color]">
+              {{ item.name }}
+            </p>
+          </li>
+        </ul>
+      </template>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import type { Task, TaskStatus } from "@/types/task";
 import { Ellipsis } from "lucide-vue-next";
-import { useTasksStore } from "~/store/tasks";
-const store = useTasksStore();
+import { TagColors } from "~/types/tag";
+
 const props = defineProps<{
   task: Task;
 }>();
