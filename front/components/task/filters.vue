@@ -22,6 +22,7 @@
           <ArrowRight :size="20" />
         </button>
       </div>
+      <form-tags v-model="filters.tags"></form-tags>
     </div>
   </div>
 
@@ -109,6 +110,7 @@ const week = ref<number>(moment().week());
 const months = computed(() => moment.monthsShort());
 const days = ref<Array<Day>>([]);
 const firstDay = ref<Moment>(moment().startOf("week"));
+const timeout = ref()
 
 const setDays = async () => {
   const startDay = firstDay.value.clone();
@@ -163,6 +165,15 @@ const toggleWeekDisplay = () => {
   weeksDisplayActive.value = !weeksDisplayActive.value;
 };
 
+const fetch = async ({ date, status, tags }: TaskFilter, { date: dateBefore } : TaskFilter) => {
+  let dateString = date ? date : moment().format("YYYY-MM-DD");
+  await store.all(dateString, status, tags);
+
+  if (date !== dateBefore) {
+    filters.value.status = "default";
+  }
+}
+
 onMounted(() => {
   filters.value.date = moment().format("YYYY-MM-DD");
 
@@ -175,13 +186,15 @@ watch(week, setDays);
 
 watch(
   filters,
-  async ({ date, status }, { date: dateBefore }) => {
-    let dateString = date ? date : moment().format("YYYY-MM-DD");
-    await store.all(dateString, status);
+  async (to, from) => {
 
-    if (date !== dateBefore) {
-      filters.value.status = "default";
+    // todo: debounce only for filters.tags
+    if(timeout.value){
+      clearTimeout(timeout.value)
     }
+    timeout.value = setTimeout(async () =>{
+      await fetch(to, from)
+    }, 1000);
   },
   {
     deep: true,

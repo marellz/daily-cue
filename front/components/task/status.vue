@@ -80,6 +80,8 @@ const updateStatus = async (_status: TaskStatus) => {
 };
 </script>
 <style lang="scss">
+
+// todo: rename this transition to something more generic
 .status-enter-from,
 .status-leave-to {
   opacity: 0;

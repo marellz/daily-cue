@@ -8,7 +8,7 @@
     <div class="flex flex-wrap gap-4">
       <span
         v-for="tag in tags"
-        :key="tag.id"
+        :key="tag._id"
         class="overview-tag"
         >{{ tag.name }}</span
       >
@@ -16,9 +16,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { tags } from "~/data/tasks";
+import { useTagsStore } from '~/store/tags';
+
 defineProps<{
   count: number;
 }>()
+
+const tagsStore = useTagsStore()
+const tags = computed(() => tagsStore.tags)
 // todo: tags from remaining tasks
 </script>

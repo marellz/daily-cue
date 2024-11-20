@@ -44,7 +44,8 @@ const run = async () => {
     }
     // write fresh
     await UserModel.insertMany(users);
-    console.log("Seeding completed");
+
+    console.log("Seeding users completed");
     process.exit(0);
   } catch (error) {
     console.log("Error occurred when seeding users: ", error);

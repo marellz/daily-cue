@@ -2,7 +2,7 @@
   <layout-container>
     <div class="mx-auto max-w-2xl">
       <!-- header -->
-      <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg z-2">
+      <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg z-[2]">
         <div class="flex items-center justify-between space-x-4">
           <div class="flex-auto animate-home">
             <client-only>
@@ -84,6 +84,7 @@ const auth = useAuthStore();
 const filters = ref<TaskFilter>({
   status: "default",
   date: null,
+  tags: []
 });
 
 const insightActive = ref(false);

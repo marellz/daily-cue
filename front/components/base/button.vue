@@ -9,7 +9,7 @@ withDefaults(
   defineProps<{
     loading?: boolean;
     disabled?: boolean;
-    type?: "submit" | "button" | undefined;
+    type?: "submit" | "button" | "reset" | undefined;
     btnClass?: string;
   }>(),
   {
