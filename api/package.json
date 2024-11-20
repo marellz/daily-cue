@@ -11,8 +11,9 @@
   "scripts": {
     "start": "node ./src/index.js",
     "dev": "nodemon ./src/index.js",
-    "seed-tasks": "node ./src/seeders/task-seeder.js",
     "seed-users": "node ./src/seeders/user-seeder.js",
+    "seed-tags": "node ./src/seeders/tag-seeder.js",
+    "seed-tasks": "node ./src/seeders/task-seeder.js",
     "jwt": "node ./config/jwt.js"
   },
   "dependencies": {

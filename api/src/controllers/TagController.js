@@ -3,8 +3,8 @@ import User from "#models/User.js";
 
 export const index = async (req, res) => {
   try {
-    const user = await User.find({ email: req.user.email });
-    const data = await Tag.find({ user: user.id });
+    const user = await User.findOne({ email: req.user.email });
+    const data = await Tag.find({ user: user._id });
 
     return res.json({
       data,
