@@ -15,28 +15,31 @@
       <custom-loader v-if="loading"></custom-loader>
       <template v-else>
         <span
-          v-for="{ id, name } in filteredTags"
-          :key="id"
+          v-for="(tag, key) in filteredTags"
+          :key
           class="overview-tag"
         >
-          {{ name }}
+          {{ tag.name }}
         </span>
       </template>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { tags } from "~/data/tasks";
+
 import _ from "lodash";
-import type { Tag } from "~/types/task";
+import { useTagsStore } from "~/store/tags";
+import type { Tag } from "~/types/tag";
 defineProps<{
   urgent?: number;
   current: number;
 }>();
 const filteredTags = ref<Array<Tag>>([]);
 const loading = ref(true);
+const tagsStore = useTagsStore()
+const tags = computed(() => tagsStore.tags)
 onMounted(() => {
-  filteredTags.value = _.shuffle(tags).splice(0, 3);
+  filteredTags.value = _.shuffle([...tags.value]).splice(0, 3);
   loading.value = false;
 });
 </script>

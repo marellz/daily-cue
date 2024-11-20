@@ -40,6 +40,7 @@ export interface TaskActivity {
 export interface TaskFilter {
   status: TaskStatusOptions;
   date: string | null;
+  tags: Array<string>
 }
 
 export type TaskDate = Date | Object;
@@ -49,4 +50,5 @@ export interface TaskForm {
   description: string;
   due_date: TaskDate;
   status?: TaskStatus
+  tags: Array<string>
 }
