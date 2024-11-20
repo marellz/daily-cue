@@ -31,11 +31,11 @@
       <div v-if="currentDay" class="bg-tea-green/25 px-3 py-4 rounded-xl">
         <h1 class="text-xl font-medium">Your tasks for {{currentDay}}</h1>
         <!-- todo: wrap in transition -->
-        <p class="text-slate-400" v-if="todaysActivity && todaysActivity.total">
+        <p v-if="todaysActivity && todaysActivity.total" class="text-slate-400">
           <span v-if="todaysActivity.remaining">{{ todaysActivity.remaining }} more to go!</span>
           <span v-else>All caught up, keep it up!</span>
         </p>
-        <p class="text-slate-400">You have no tasks for this day.</p>
+        <p v-else class="text-slate-400">You have no tasks for this day.</p>
       </div>
 
       <transition-group name="tasks" tag="ul" class="space-y-3 flex flex-col mt-4 relative">
