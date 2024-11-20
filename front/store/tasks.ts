@@ -30,7 +30,7 @@ export const useTasksStore = defineStore(
 
     const tags = ref<Array<Tag>>(dummyTags);
 
-    const all = async (date: string, status: TaskStatusOptions) => {
+    const all = async (date: string, status: TaskStatusOptions, tags: Array<string> = []) => {
       currentDay.value = date;
 
       try {
@@ -38,6 +38,7 @@ export const useTasksStore = defineStore(
           params: {
             date,
             status,
+            tags,
           },
         });
         tasks.value = data.map((task: Task) => {

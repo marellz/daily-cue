@@ -53,4 +53,5 @@ export const newTask: TaskForm = {
   description: "",
   due_date: new Date(),
   status: "pending",
+  tags: []
 };

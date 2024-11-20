@@ -84,6 +84,7 @@ const auth = useAuthStore();
 const filters = ref<TaskFilter>({
   status: "default",
   date: null,
+  tags: []
 });
 
 const insightActive = ref(false);
