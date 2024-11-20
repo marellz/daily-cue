@@ -20,6 +20,10 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
 
+definePageMeta({
+  layout: "home",
+})
+
 const auth = useAuthStore();
 
 const greeting = computed(() => {
@@ -27,6 +31,7 @@ const greeting = computed(() => {
     auth.isAuthenticated && auth.user ? auth.firstName : "stranger";
   return `Hello ${username}!`;
 });
+
 </script>
 <style lang="scss">
 .animate-home {
