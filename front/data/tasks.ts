@@ -1,16 +1,6 @@
-import type { Task, Tag, Status, StatusOptions, TaskForm } from "@/types/task";
+import type { Task, Status, StatusOptions, TaskForm } from "@/types/task";
 
 export const tasks: Array<Task> = [];
-
-export const tags: Array<Tag> = [
-  { id: 1, name: "shopping" },
-  { id: 2, name: "planning" },
-  { id: 3, name: "home" },
-  { id: 4, name: "work" },
-  { id: 5, name: "errands" },
-  { id: 6, name: "family" },
-  { id: 7, name: "friends" },
-];
 
 export const status: Array<Status> = [
   {

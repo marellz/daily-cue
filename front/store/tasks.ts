@@ -1,8 +1,6 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
-import { tags as dummyTags } from "@/data/tasks";
 import type { Task, TaskForm, TaskActivity, TaskStatusOptions } from "~/types/task";
-import type { Tag } from "~/types/tag";
 import { useToastsStore } from "./toasts";
 import useMoment from "~/composables/useMoment";
 
@@ -28,22 +26,31 @@ export const useTasksStore = defineStore(
 
     const weeklyActivity = ref<Array<TaskActivity>>();
 
-    const tags = ref<Array<Tag>>(dummyTags);
 
     const all = async (date: string, status: TaskStatusOptions, tags: Array<string> = []) => {
       currentDay.value = date;
 
       try {
-        const { data }: { data: Task[] } = await $api.get(`tasks`, {
+        const { data, error, message }: { data?: Task[], error?: string; message?: string } = await $api.get(`tasks`, {
           params: {
             date,
             status,
             tags,
           },
         });
-        tasks.value = data.map((task: Task) => {
-          return { ...task, due_date: moment(task.due_date).toDate() };
-        });
+
+        if(error || message){
+          // todo: implement toast
+          return false
+        }
+
+        if(data){
+          tasks.value = data.map((task: Task) => {
+            return { ...task, due_date: moment(task.due_date).toDate() };
+          });
+        }
+
+        return true
       } catch (error: any) {
         console.error(error);
         toasts.add({
@@ -78,15 +85,24 @@ export const useTasksStore = defineStore(
       }
     };
 
-    const create = async (task: Task) => {
-      const { data: item }: { data: Task } = await $api.post("/tasks", task);
-      if (item && item._id) {
-        tasks.value.push(item);
+    const create = async (task: TaskForm) => {
+      const { data, error, message }: { data?: Task, error?: string; message?: string; } = await $api.post("/tasks", task);
+     
+      if(data){
+        toasts.add({
+          variant: "success",
+          title: "Task has been created!",
+        });
       }
-      toasts.add({
-        variant: "success",
-        title: "Task has been created!",
-      });
+
+      if(error || message){
+         toasts.add({
+          variant: "error",
+          title: "Error creating task",
+        });
+
+        return false
+      }
 
       return true;
     };
@@ -193,7 +209,6 @@ export const useTasksStore = defineStore(
 
     return {
       tasks,
-      tags,
       all,
       get,
       create,
