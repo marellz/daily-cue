@@ -34,7 +34,7 @@
       v-else
       class="bg-tea-green/50 rounded-xl flex items-center justify-between mt-4"
     >
-      <div class="flex items-start w-full">
+      <div class="flex  w-full">
         <div
           v-for="(day, i) in days"
           :key="day.dateString"
@@ -51,7 +51,7 @@
           <label
             :for="day.dateString"
             role="button"
-            class="p-3 flex flex-col rounded-xl text-center focus:ring focus:ring-celadon hover:ring hover:ring-celadon/25"
+            class="p-3 flex flex-col rounded-xl text-center focus:ring focus:ring-celadon hover:ring hover:ring-celadon/25 h-full"
             :class="{
               'ring ring-celadon': day.isToday,
               'bg-celadon': day.dateString === filters.date,
@@ -157,7 +157,7 @@ const toggleWeek = (forward?: boolean) => {
   }
 };
 
-const weeksDisplayActive = ref(false);
+const weeksDisplayActive = ref(true);
 
 const toggleWeekDisplay = () => {
   weeksDisplayActive.value = !weeksDisplayActive.value;
