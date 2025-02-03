@@ -39,6 +39,8 @@ export default defineNuxtPlugin(() => {
           if (route.path.match(`/auth/*`)) {
             useRouter().push("/");
           }
+        default: 
+          console.error(error);
       }
       return Promise.reject(error);
     }
