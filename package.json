@@ -13,6 +13,7 @@
     "@faker-js/faker": "^9.2.0",
     "@nuxt/fonts": "^0.10.2",
     "@pinia/nuxt": "^0.5.5",
+    "@supabase/supabase-js": "^2.48.1",
     "@vueuse/core": "^11.1.0",
     "axios": "^1.7.7",
     "lodash": "^4.17.21",
