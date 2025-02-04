@@ -7,13 +7,13 @@
       @click="toggleUserDropdown"
     >
       <span>
-        {{ user.name }}
+        {{ user.name ?? 'Stranger' }}
       </span>
       <chevron-down />
     </button>
 
     <ul
-      class="absolute border border-t-0 border-slate-200 rounded-b-3xl transform -bottom-[5px] transition z-[1] w-full overflow-hidden p-3 space-y-2 bg-white"
+      class="absolute border border-t-0 border-slate-200 rounded-b-3xl transform -bottom-[5px] transition z-[1] w-full min-w-40 right-0 overflow-hidden p-3 space-y-2 bg-white"
       :class="{
         'opacity-0 translate-y-[90%] invisible': !userDropdownActive,
         'opacity-full translate-y-full visible': userDropdownActive,

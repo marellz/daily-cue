@@ -5,12 +5,12 @@
       <div>
         <page-title>User profile</page-title>
       </div>
-      <div class="mt-10">
+      <div class="mt-10" v-if="form">
         <fieldset class="card">
           <legend class="px-2">
             <h1 class="text-lg font-medium">User information</h1>
           </legend>
-          <form @submit.prevent="updateUserInformation">
+          <form @submit.prevent="updateUser">
             <div class="space-y-4">
               <form-input
                 v-model="form.name"
@@ -74,54 +74,34 @@
 </template>
 <script lang="ts" setup>
 import { Edit, FileCheck2, UserCheck, UserPen } from "lucide-vue-next";
-import { useAuthStore } from "~/store/auth";
-import type { User } from "~/types/users";
-import type { UserForm, PasswordForm } from "~/types/form";
+import { useAuthStore, type User } from "~/store/auth";
 definePageMeta({
   middleware: "auth",
 });
 
 const auth = useAuthStore();
 
-const emptyUserForm: UserForm = {
-  name: "",
-  email: "",
-};
+const form = ref<User|null>(null);
+const password = ref("");
 
-const emptyPasswordForm: PasswordForm = {
-  current: "",
-  new_pass: "",
-  new_pass_confirmation: "",
-};
+const updateUser = async () => {
+  if(!form.value){
+    return
+  }
 
-const form = ref<User | UserForm>(emptyUserForm);
-const password = ref(emptyPasswordForm);
-
-const updateUserInformation = async () => {
-  await auth.updateUserInformation(form.value);
+  await auth.updateUser(form.value);
 };
 
 const updatePassword = async () => {
   const updated = await auth.updatePassword(password.value);
   if (updated) {
-    password.value = emptyPasswordForm;
+    password.value = "";
   }
-};
-
-const fillDummyPassword = () => {
-  const current = "secret21";
-  const new_pass = useFaker().generateString();
-
-  password.value = {
-    current,
-    new_pass,
-    new_pass_confirmation: new_pass,
-  };
 };
 
 onMounted(() => {
-  if (auth.user) {
-    form.value = auth.user;
+  if(auth.user){
+    form.value = auth.user
   }
-});
+})
 </script>
