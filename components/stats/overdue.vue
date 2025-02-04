@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useTagsStore } from '~/store.old/tags';
+import { useTagsStore } from '~/store/tags';
 
 defineProps<{
   count: number;
