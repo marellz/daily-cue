@@ -9,9 +9,15 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  runtimeConfig: {
-    SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY,
+    redirectOptions:{
+      login: '/auth/login',
+      callback: '/tasks',
+      exclude: ['/', '/test', '/auth/**']
+    },
+    types: './types/supabase.ts'
   },
   app: {
     head: {
@@ -30,6 +36,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/fonts",
     "@pinia/nuxt",
+    "@nuxtjs/supabase",
     "pinia-plugin-persistedstate/nuxt",
     "vue3-perfect-scrollbar/nuxt",
   ],
