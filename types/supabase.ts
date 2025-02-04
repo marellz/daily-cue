@@ -11,24 +11,27 @@ export type Database = {
     Tables: {
       tags: {
         Row: {
+          color: string
           created_at: string | null
+          description: string | null
           id: string
           name: string
-          slug: string
           user_id: string
         }
         Insert: {
+          color: string
           created_at?: string | null
+          description?: string | null
           id?: string
           name: string
-          slug: string
           user_id: string
         }
         Update: {
+          color?: string
           created_at?: string | null
+          description?: string | null
           id?: string
           name?: string
-          slug?: string
           user_id?: string
         }
         Relationships: []
@@ -36,7 +39,7 @@ export type Database = {
       tasks: {
         Row: {
           completed: boolean | null
-          created_at: string | null
+          created_at: string
           description: string | null
           id: string
           status: string
@@ -46,7 +49,7 @@ export type Database = {
         }
         Insert: {
           completed?: boolean | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: string
           status: string
@@ -56,13 +59,40 @@ export type Database = {
         }
         Update: {
           completed?: boolean | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: string
           status?: string
           tags?: string[] | null
           title?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          avatar: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          other_names: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          other_names?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          other_names?: string | null
         }
         Relationships: []
       }
