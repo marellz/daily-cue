@@ -19,9 +19,6 @@
         <base-button class="rounded-lg btn-primary":loading="store.loading">
           <span>Create account</span>
         </base-button>
-        <dev-only>
-          <button type="button" @click="fillDefaultValues">Fill values</button>
-        </dev-only>
       </div>
     </form>
     <hr class="mt-4" />
@@ -34,9 +31,6 @@
 </template>
 <script lang="ts" setup>
 import { useAuthStore } from "~/store/auth";
-import useFaker from '~/composables/useFaker'
-
-const { generateNewUser } = useFaker()
 
 interface RegistrationForm {
   name: string;
@@ -59,19 +53,9 @@ const user = ref<RegistrationForm>({
   password_confirmation: "",
 });
 
-const fillDefaultValues = () => {
-  user.value = generateNewUser();
-};
-
-const router = useRouter();
 
 const register = async () => {
-  store.clearErrors();
-  const success = await store.register(user.value);
-  if(success) {
-    router.push("/tasks");
-  }
+  await store.register(user.value);
 };
 
-onMounted(store.clearErrors);
 </script>

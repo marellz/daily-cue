@@ -1,34 +1,27 @@
-import type {
-  AuthResponse,
-  User,
-  UserAttributes,
-} from "@supabase/supabase-js";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import supabase from "@/services/supabase";
+
 import { useToastsStore } from "@/store/toasts";
+import type { AuthResponse } from "@supabase/supabase-js";
 
-interface LoginForm {
+export interface User {
+  id: string;
+  avatar: string | null;
+  created_at: string;
   email: string;
-  password: string;
-}
-
-interface NewUser {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
+  name: string | null;
+  other_names: string | null;
 }
 
 export const useAuthStore = defineStore(
   "auth",
   () => {
+    const supabase = useSupabaseClient();
+
     const user = ref<User | null>(null);
-    const token = ref<string | null>(null);
-    const isAuthenticated = computed(
-      () => user.value !== null
-    );
+
+    const isAuthenticated = computed(() => user.value !== null);
     const loading = ref(false);
     const router = useRouter();
 
@@ -41,7 +34,38 @@ export const useAuthStore = defineStore(
 
     const toasts = useToastsStore();
 
-    const login = async (form: LoginForm) => {
+    const getAuthUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      return user;
+    };
+
+    const getUser = async () => {
+      const authUser = await getAuthUser();
+      if (!authUser) {
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", authUser.id);
+        if (data?.length) {
+          user.value = data[0];
+        }
+        if (error) {
+          handleAuthError(error.message);
+        }
+
+        return null;
+      } catch (error) {
+        handleAuthError(error);
+      }
+    };
+
+    const login = async (form: { email: string; password: string }) => {
       loading.value = true;
       errors.value = {};
       try {
@@ -52,8 +76,8 @@ export const useAuthStore = defineStore(
           handleAuthError(error);
         }
 
-        if (data && data.session) {
-          handleSessionCreation(data.session?.access_token, data.user);
+        if (data.user) {
+          handleSessionCreation();
         }
       } catch (error) {
         handleAuthError(error);
@@ -62,7 +86,7 @@ export const useAuthStore = defineStore(
       }
     };
 
-    const register = async (user: NewUser) => {
+    const register = async (user: { email: string; password: string }) => {
       loading.value = true;
       errors.value = {};
       try {
@@ -79,7 +103,7 @@ export const useAuthStore = defineStore(
         }
 
         if (session) {
-          handleSessionCreation(session.access_token, _user);
+          handleSessionCreation();
 
           return true;
         }
@@ -92,17 +116,24 @@ export const useAuthStore = defineStore(
       }
     };
 
-    const updateUser = async (payload: UserAttributes) => {
-      await supabase.auth.updateUser(payload);
-    };
-
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
+    const updateUser = async (payload: User) => {
+      if (!user.value) {
         return;
       }
-      user.value = data.user;
-    
+
+      try {
+        const { status, error } = await supabase
+          .from("users")
+          .update(payload)
+          .eq("id", user.value.id);
+        if (error) {
+          handleAuthError(error.message);
+        }
+
+        if (status === 204) {
+          user.value = { ...user.value, ...payload };
+        }
+      } catch (error) {}
     };
 
     const logout = async () => {
@@ -112,7 +143,6 @@ export const useAuthStore = defineStore(
         handleAuthError(error);
       }
 
-      token.value = null;
       user.value = null;
 
       router.push("/");
@@ -201,32 +231,20 @@ export const useAuthStore = defineStore(
       console.error({ authError: error });
     };
 
-    const handleSessionCreation = async (
-      _token: string,
-      _user: User | null
-    ) => {
-      token.value = _token;
-
-      if (!_user) {
-        return;
-      }
-
-      user.value = _user;
-
-      router.push("/");
+    const handleSessionCreation = async () => {
+      await getUser();
+      router.push("/tasks");
     };
 
     const resetErrors = () => {
       errors.value = {};
     };
 
-  
     return {
       user,
       getUser,
       updateUser,
       isAuthenticated,
-      token,
       hasErrors,
       loading,
       login,
@@ -245,8 +263,7 @@ export const useAuthStore = defineStore(
   },
   {
     persist: {
-      storage: sessionStorage,
-      pick: ["authUser", "user"],
+      pick: ["user"],
     },
   }
 );
