@@ -34,16 +34,25 @@ export type Database = {
           name?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tags_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {
           completed: boolean | null
           created_at: string
           description: string | null
+          due_date: string
           id: string
           status: string
-          tags: string[] | null
+          tags: string[]
           title: string
           user_id: string
         }
@@ -51,9 +60,10 @@ export type Database = {
           completed?: boolean | null
           created_at?: string
           description?: string | null
+          due_date: string
           id?: string
-          status: string
-          tags?: string[] | null
+          status?: string
+          tags?: string[]
           title: string
           user_id: string
         }
@@ -61,13 +71,22 @@ export type Database = {
           completed?: boolean | null
           created_at?: string
           description?: string | null
+          due_date?: string
           id?: string
           status?: string
-          tags?: string[] | null
+          tags?: string[]
           title?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tasks_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
