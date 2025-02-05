@@ -1,6 +1,6 @@
 <template>
   <layout-container>
-    <div class="mx-auto max-w-2xl">
+    <div>
       <!-- header -->
       <div class="sticky rounded-xl p-4 -mx-4 top-10 pb-10 backdrop-blur-lg z-[2]">
         <div class="flex items-center justify-between space-x-4">
@@ -17,10 +17,12 @@
               <brain-circuit :size="20" />
               <span>Insight</span>
             </button>
-            <button type="button" class="btn btn-primary" @click="newTaskForm.launch">
-              <plus :size="20"></plus>
-              <span>Add a new task</span>
-            </button>
+            <nuxt-link to="/tasks/create">
+              <button type="button" class="btn btn-primary">
+                <plus :size="20"></plus>
+                <span>Add a new task</span>
+              </button>
+            </nuxt-link>
           </div>
         </div>
         <div class="mt-4">
@@ -92,7 +94,7 @@ const currentDay = computed(() => {
   return moment(_c).format('Do MMM')
 })
 const user = computed(() =>
-  auth.user ? auth.user.name.split(" ")[0] : "Unknown"
+  auth.user?.name ? auth.user.name.split(" ")[0] : "Unknown"
 );
 const dayTime = computed(() => {
   let h = moment().hours();
@@ -128,20 +130,21 @@ const showTaskModal = async (id: string) => {
   taskModalActive.value = true;
 };
 
-const todaysActivity = computed(() => {
-  let _a = store.weeklyActivity?.find(d => d.day===filters.value.date)
-  if(!_a){
-    return null
-  }
-  return {
-    total: _a.total,
-    remaining: _a.pending + _a.in_progress
-  }
-})
+// const todaysActivity = computed(() => {
+//   let _a = store.weeklyActivity?.find(d => d.day===filters.value.date)
+//   if(!_a){
+//     return null
+//   }
+//   return {
+//     total: _a.total,
+//     remaining: _a.pending + _a.in_progress
+//   }
+// })
 
 onMounted(async () => {
-  await store.all(store.currentDay, "default");
+  await store.get(null, "default");
 });
+
 </script>
 <style lang="scss" scoped>
 .tasks {
