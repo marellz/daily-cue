@@ -43,6 +43,7 @@ export const useToastsStore = defineStore(
         description: description ??''
       })
     }
+    
     const addInfo = (title: string, description : string | undefined) => {
        add({
         variant: 'info',
@@ -50,6 +51,7 @@ export const useToastsStore = defineStore(
         description: description ??''
       })
     }
+
     const addSuccess = (title: string, description : string | undefined) => {
        add({
         variant: 'success',

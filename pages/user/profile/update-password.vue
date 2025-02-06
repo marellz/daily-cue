@@ -33,6 +33,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { FileCheck2 } from "lucide-vue-next";
 import { useAuthStore } from "~/store/auth";
 
 const auth = useAuthStore();

@@ -1,6 +1,7 @@
 <template>
   <div class="relative" ref="target">
     <button
+      type="button"
       class="!flex items-center space-x-2 form-input"
       @click="active = !active"
     >

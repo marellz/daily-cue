@@ -23,7 +23,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Edit, FileCheck2, UserCheck, UserPen } from "lucide-vue-next";
+import {  UserCheck } from "lucide-vue-next";
 import { useAuthStore, type User } from "~/store/auth";
 definePageMeta({
   middleware: "auth",

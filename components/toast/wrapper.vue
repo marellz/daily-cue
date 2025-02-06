@@ -2,7 +2,7 @@
   <transition-group
     tag="ul"
     name="toasts"
-    class="fixed z-20 h-1 top-0 left-0 w-full flex flex-col items-end space-y-4"
+    class="fixed z-50 h-1 top-0 left-0 w-full flex flex-col items-end space-y-4"
   >
     <toast-item
       :toast

@@ -26,11 +26,11 @@
         </div>
       </form-group>
       <div class="flex space-x-3">
+        <base-button type="button" @click="$emit('cancel')">Cancel</base-button>
         <base-button type="submit" class="btn-primary">
           <Check />
           <span>Save tag</span></base-button
         >
-        <base-button type="reset" @click="$emit('cancel')">Cancel</base-button>
       </div>
     </div>
   </form>

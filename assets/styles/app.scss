@@ -49,3 +49,32 @@
     @apply text-black;
   }
 }
+
+// transitions
+.tasks {
+  &-enter-to,
+  &-leave-from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  &-enter-to {
+    transition-duration: 0.7s;
+  }
+
+  &-enter-active {
+    position: absolute;
+    opacity: 0;
+  }
+
+  &-leave-active,
+  &-enter-active {
+    transition: all 0.5s ease;
+  }
+}
