@@ -6,7 +6,7 @@
       class="tag inline-flex items-center space-x-2"
       @mouseenter="showNextArrow = true"
       @mouseleave="showNextArrow = false"
-      :class="[variant(statusName)]"
+      :class="[variant(statusName as TaskStatusOptions)]"
       @click="showNext = !showNext"
     >
       <span>
@@ -38,10 +38,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Status, Task, TaskStatus, TaskStatusOptions } from "@/types/task";
+import type { Status, TaskStatus, TaskStatusOptions } from "@/types/task";
 import { status as statusTags, StatusEnum } from "@/data/tasks";
 import { onClickOutside } from "@vueuse/core";
-import { useTasksStore } from "~/store/tasks";
+import { type Task, useTasksStore } from "~/store/tasks";
 import { ArrowRight } from "lucide-vue-next";
 
 const store = useTasksStore()
@@ -54,7 +54,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(["update-status"]);
-const statusName = computed(() => props.task.status ?? "default");
+const statusName = computed(() => props.task.status);
 const status = computed(() => statusTags.find((st)=>st.name === statusName.value))
 const nextStatus = computed(() => {
   if (statusName.value === "completed") {
@@ -64,20 +64,23 @@ const nextStatus = computed(() => {
     return statusTags[index + 1];
   }
 });
+
 const target = ref();
 const showNext = ref(false);
 const showNextArrow = ref(false);
-onClickOutside(target, () => {
-  showNext.value = false;
-});
+
 const variant = (_status: TaskStatusOptions) => StatusEnum[_status];
 const updateStatus = async (_status: TaskStatus) => {
-  if (props.task._id) {
-    await store.update(props.task._id, {...props.task, status: _status });
+  if (props.task.id) {
+    await store.update(props.task.id, {...props.task, status: _status });
     showNext.value = false
     emit('update-status')
   }
 };
+
+onClickOutside(target, () => {
+  showNext.value = false;
+});
 </script>
 <style lang="scss">
 

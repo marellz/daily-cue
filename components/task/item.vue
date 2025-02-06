@@ -9,10 +9,10 @@
         <div class="flex">
           <button
             type="button"
-            class="opacity-50 hover:opacity-100 bg-white hover:shadow transition easy-in hover:text-slate-500 rounded-full p-2"
+            class="p-2 bg-black text-white rounded-full shadown-lg hover:shadow-md hover:shadow-black/20"
             @click="show"
           >
-            <Ellipsis />
+            <SquareArrowOutUpRight />
           </button>
         </div>
       </div>
@@ -27,8 +27,8 @@
       <template v-if="task.tags?.length">
         <ul class="mt-4 flex flex-wrap gap-4">
           <li v-for="item in task.tags">
-            <p class="rounded-full px-2 py-0.5 text-xs leading-normal" :class="TagColors[item.color]">
-              {{ item.name }}
+            <p class="rounded-full px-2 py-0.5 text-xs leading-normal" :class="TagColors[item]">
+              {{ item }}
             </p>
           </li>
         </ul>
@@ -37,23 +37,22 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Task, TaskStatus } from "@/types/task";
-import { Ellipsis } from "lucide-vue-next";
+import { type TaskStatus } from "@/types/task";
+import { SquareArrowOutUpRight } from "lucide-vue-next";
+import type { Task } from "~/store/tasks";
 import { TagColors } from "~/types/tag";
 
 const props = defineProps<{
-  task: Task;
+  task: Task
 }>();
 
 const emit = defineEmits(["show-task"]);
 
 const show = () => {
-  emit("show-task", props.task._id);
+  emit("show-task", props.task.id);
 };
 
-type StatusBackground = {
-  [key in TaskStatus]: string;
-}
+type StatusBackground = Record<TaskStatus, string>
 
 const statusBackground: StatusBackground = {
   pending: "bg-amber-100 border-amber-500",

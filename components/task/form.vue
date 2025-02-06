@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-4">
-    <form @submit="submit" v-if="form">
+  <form @submit.prevent="submit" v-if="form">
+    <div class="space-y-4">
       <form-input label="Task title" v-model="form.title" />
       <form-text
         label="Task description"
@@ -28,9 +28,9 @@
                 ]"
               >
                 <span>{{ tag.name }}</span>
-                <transtion name="status">
+                <transition name="status">
                   <Check v-if="selectedTag(tag.id)" :size="20" />
-                </transtion>
+                </transition>
               </p>
             </label>
           </div>
@@ -54,14 +54,15 @@
         </form-group>
       </div>
       <div class="flex items-center space-x-2 justify-end mt-4">
-        <base-button @click="cancel"> <span>Cancel</span></base-button>
-        <base-button class="btn-primary" @click="submit">
+        <base-button type="button" @click="cancel"> <span>Cancel</span></base-button>
+        <base-button type="submit" class="btn-primary">
           <Check />
-          <span>Create task</span>
+          <span v-if="editMode">Update task</span>
+          <span v-else>Create task</span>
         </base-button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </template>
 <script lang="ts" setup>
 import { type Moment } from "moment";
@@ -76,7 +77,7 @@ const tagsStore = useTagsStore();
 const emit = defineEmits(["submit", "cancel"]);
 const tags = computed(() => tagsStore.tags);
 
-const newTask : TaskForm = {
+const newTask: TaskForm = {
   tags: [],
   status: "pending",
   title: "",
@@ -88,9 +89,11 @@ const props = defineProps<{
   task?: TaskForm;
 }>();
 
-const form = ref<TaskForm|null>(null);
+const form = ref<TaskForm | null>(null);
 const selectedDate = ref<Moment | null>(null);
 const selectedTag = (id: string) => form.value?.tags.includes(id);
+
+const editMode = computed(() => props.task?.id !== undefined);
 
 watch(selectedDate, (v: Moment | null) => {
   if (v && form.value) {
@@ -114,7 +117,7 @@ onMounted(() => {
   if (props.task) {
     form.value = props.task;
   } else {
-    form.value = newTask
+    form.value = newTask;
   }
 });
 </script>
