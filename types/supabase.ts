@@ -46,7 +46,7 @@ export type Database = {
       }
       tasks: {
         Row: {
-          completed: boolean | null
+          completed: boolean
           created_at: string
           description: string | null
           due_date: string
@@ -57,7 +57,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          completed?: boolean | null
+          completed?: boolean
           created_at?: string
           description?: string | null
           due_date: string
@@ -68,7 +68,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          completed?: boolean | null
+          completed?: boolean
           created_at?: string
           description?: string | null
           due_date?: string

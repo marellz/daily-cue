@@ -13,10 +13,6 @@
             </client-only>
           </div>
           <div class="flex items-center space-x-3">
-            <button type="button" class="btn border-black" @click="insightActive = true">
-              <brain-circuit :size="20" />
-              <span>Insight</span>
-            </button>
             <nuxt-link to="/tasks/create">
               <button type="button" class="btn btn-primary">
                 <plus :size="20"></plus>
@@ -33,15 +29,15 @@
       <div v-if="currentDay" class="bg-tea-green/25 px-3 py-4 rounded-xl">
         <h1 class="text-xl font-medium">Your tasks for {{currentDay}}</h1>
         <!-- todo: wrap in transition -->
-        <p v-if="todaysActivity && todaysActivity.total" class="text-slate-400">
+        <!-- <p v-if="todaysActivity && todaysActivity.total" class="text-slate-400">
           <span v-if="todaysActivity.remaining">{{ todaysActivity.remaining }} more to go!</span>
           <span v-else>All caught up, keep it up!</span>
-        </p>
-        <p v-else class="text-slate-400">You have no tasks for this day.</p>
+        </p> -->
+        <!-- <p v-else class="text-slate-400">You have no tasks for this day.</p> -->
       </div>
 
       <transition-group name="tasks" tag="ul" class="space-y-3 flex flex-col mt-4 relative">
-        <li v-for="task in tasks" :key="task._id">
+        <li v-for="task in tasks" :key="task.id">
           <task-item class="max-w-full" :task @show-task="showTaskModal" />
         </li>
         <div v-if="!tasks.length" class="p-10 flex gap-10 items-center card border-0 mt-10 bg-tea-green/50">
@@ -54,16 +50,13 @@
       </transition-group>
     </div>
   </layout-container>
-  <task-create ref="newTaskForm" />
-  <task-insight v-model:active="insightActive" />
   <task-view v-model:active="taskModalActive" v-if="currentTask" :id="currentTask" />
 </template>
 
 <script lang="ts" setup>
-// TODO: view by day✅, view by tag👨🏽‍💻, view by status✅
 import { useTasksStore } from "~/store/tasks";
-import { Plus, BrainCircuit } from "lucide-vue-next";
-import type { Task, TaskFilter } from "~/types/task";
+import { Plus } from "lucide-vue-next";
+import type { TaskFilter } from "~/types/task";
 import { useAuthStore } from "~/store/auth";
 import useMoment from "~/composables/useMoment";
 
@@ -80,10 +73,8 @@ const filters = ref<TaskFilter>({
   tags: []
 });
 
-const insightActive = ref(false);
-
 const tasks = computed(() => store.tasks);
-const newTaskForm = ref();
+
 const currentDay = computed(() => {
   let _c = filters.value.date
   if(!_c){
@@ -93,9 +84,11 @@ const currentDay = computed(() => {
 
   return moment(_c).format('Do MMM')
 })
+
 const user = computed(() =>
   auth.user?.name ? auth.user.name.split(" ")[0] : "Unknown"
 );
+
 const dayTime = computed(() => {
   let h = moment().hours();
   let t;
@@ -123,6 +116,7 @@ const dayTime = computed(() => {
 
   return t;
 });
+
 const taskModalActive = ref(false);
 const currentTask = ref<string | number | null>();
 const showTaskModal = async (id: string) => {
@@ -130,48 +124,9 @@ const showTaskModal = async (id: string) => {
   taskModalActive.value = true;
 };
 
-// const todaysActivity = computed(() => {
-//   let _a = store.weeklyActivity?.find(d => d.day===filters.value.date)
-//   if(!_a){
-//     return null
-//   }
-//   return {
-//     total: _a.total,
-//     remaining: _a.pending + _a.in_progress
-//   }
-// })
-
 onMounted(async () => {
-  await store.get(null, "default");
+  /**already happending in filters.vue */
+  // await store.get(store.today, "default");
 });
 
 </script>
-<style lang="scss" scoped>
-.tasks {
-  &-enter-to,
-  &-leave-from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-
-  &-enter-to {
-    transition-duration: 0.7s;
-  }
-
-  &-enter-active {
-    position: absolute;
-    opacity: 0;
-  }
-
-  &-leave-active,
-  &-enter-active {
-    transition: all 0.5s ease;
-  }
-}
-</style>

@@ -18,27 +18,17 @@ const newTask = {
 
 const moment = useMoment();
 const store = useTasksStore();
-const modalActive = ref(false);
+const router = useRouter()
 
-const launch = () => {
-  modalActive.value = true;
-};
-
-const form = ref<NewTask>(newTask);
-
-const submit = async () => {
-  let task: NewTask & { due_date: string } = { ...form.value };
+const submit = async (_task: TaskForm) => {
+  let task: NewTask & { due_date: string } = { ..._task };
   task.status = "pending";
   task.due_date = moment().format("YYYY-MM-DD");
 
   const success = await store.create(task);
 
   if (success) {
-    modalActive.value = false;
+    router.push('/tasks')
   }
 };
-
-defineExpose({
-  launch,
-});
 </script>
